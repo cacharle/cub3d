@@ -1,0 +1,4 @@
+[submodule "libft"]
+	path = libft
+	url = http://github.com/HappyTramp/libft
+	branch = rendu
