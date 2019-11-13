@@ -7,7 +7,7 @@ LDFLAGS = -L$(LIBFT_PATH) -lft
 NAME = cub3D
 SRC = main.c
 OBJ = $(SRC:.c=.o)
-INCLUDE = header.h
+INCLUDE = cub3d.h
 
 all: libft_all $(NAME)
 
