@@ -49,6 +49,30 @@ typedef struct
 	t_map map;
 }		t_parsing;
 
+typedef struct
+{
+	t_point origin;
+	int angle;
+} 	t_ray;
+
+typedef struct
+{
+	t_point a;
+	t_point b;
+}	t_wall;
+
+typedef struct
+{
+	t_point pos;
+	int view_angle;
+} t_player;
+
+typedef struct
+{
+	t_ray *rays;
+	t_player player;
+}	t_state;
+
 typedef t_bool (*func)(t_parsing *parsing, char *line) t_line_parser_func;
 
 typedef struct

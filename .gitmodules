@@ -2,3 +2,6 @@
 	path = libft
 	url = http://github.com/HappyTramp/libft
 	branch = rendu
+[submodule "generator"]
+	path = generator
+	url = http://github.com/HappyTramp/cub3d_generator
