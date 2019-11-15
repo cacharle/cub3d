@@ -33,9 +33,9 @@ typedef int	t_bool;
 
 typedef struct
 {
-	int	x;
-	int	y;
-}		t_vector;
+	float	x;
+	float	y;
+}			t_vector;
 
 typedef struct
 {
@@ -79,6 +79,10 @@ typedef struct	s_state
 	t_vector	pos;
 	t_vector	dir;
 	t_vector	plane;
+	t_map		map;
+	int			width;
+	int			height;
+
 }				t_state;
 
 typedef t_bool	(*t_option_parser_func)(t_parsing *parsing, char *line);
@@ -117,5 +121,17 @@ t_bool parse_ceilling_color(t_parsing *parsing, char *line);
 */
 
 int			handle_key(int key, void *param);
+
+/*
+** graphics.c
+*/
+
+t_state		*create_state(t_parsing *parsing);
+
+/*
+** render.c
+*/
+
+
 
 #endif
