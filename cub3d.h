@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/15 09:28:43 by cacharle         ###   ########.fr       */
+/*   Updated: 2019/11/16 12:51:46 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
+# define WINDOW_TITLE "cub3D"
 # define MLXK_W 13
 # define MLXK_A 0
 # define MLXK_S 1
@@ -23,6 +24,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <stdlib.h>
+# include <math.h>
 # include "mlx.h"
 # include "libft.h"
 
@@ -33,8 +35,8 @@ typedef int	t_bool;
 
 typedef struct
 {
-	float	x;
-	float	y;
+	double	x;
+	double	y;
 }			t_vector;
 
 typedef struct
@@ -76,13 +78,16 @@ typedef struct
 typedef struct	s_state
 {
 	t_bool		running;
+	void		*mlx_ptr;
+	void		*window_ptr;
+	int			window_width;
+	int			window_height;
 	t_vector	pos;
 	t_vector	dir;
 	t_vector	plane;
 	t_map		map;
-	int			width;
-	int			height;
-
+	int			map_width;
+	int			map_height;
 }				t_state;
 
 typedef t_bool	(*t_option_parser_func)(t_parsing *parsing, char *line);
@@ -126,7 +131,11 @@ int			handle_key(int key, void *param);
 ** graphics.c
 */
 
-t_state		*create_state(t_parsing *parsing);
+t_state		*create_state(void *mlx_ptr, void *window_ptr, t_parsing *parsing);
+int graphics_update(void *param);
+void draw_column(t_state *state, int x);
+t_vector vector_add(t_vector a, t_vector b);
+t_vector vector_scale(t_vector v, double scalar);
 
 /*
 ** render.c
