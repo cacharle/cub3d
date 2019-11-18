@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/16 12:51:46 by cacharle         ###   ########.fr       */
+/*   Updated: 2019/11/18 02:43:17 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -15,11 +15,13 @@
 # define CUB3D_H
 
 # define WINDOW_TITLE "cub3D"
+# define MLXK_ESC 53
 # define MLXK_W 13
 # define MLXK_A 0
 # define MLXK_S 1
 # define MLXK_D 2
-# define MLXK_ESC 53
+# define MLXK_LEFT 123
+# define MLXK_RIGHT 124
 
 # include <unistd.h>
 # include <fcntl.h>
@@ -31,6 +33,8 @@
 # define TRUE 1
 # define FALSE 0
 
+# define SQUARE(x) ((x) * (x))
+
 typedef int	t_bool;
 
 typedef struct
@@ -41,9 +45,14 @@ typedef struct
 
 typedef struct
 {
-	int r;
-	int g;
-	int b;
+	int		hexcode;
+	struct
+	{
+		t_byte b;
+		t_byte g;
+		t_byte r;
+		t_byte empty;
+	}	rgb;	
 }		t_color;
 
 typedef enum
@@ -88,6 +97,8 @@ typedef struct	s_state
 	t_map		map;
 	int			map_width;
 	int			map_height;
+	t_color		ceilling_color;
+	t_color		floor_color;
 }				t_state;
 
 typedef t_bool	(*t_option_parser_func)(t_parsing *parsing, char *line);
@@ -142,5 +153,12 @@ t_vector vector_scale(t_vector v, double scalar);
 */
 
 
+/*
+** linear_algebra.c
+*/
+
+t_vector vector_add(t_vector a, t_vector b);
+t_vector vector_scale(t_vector v, double scalar);
+t_vector vector_rotate(t_vector v, double angle);
 
 #endif

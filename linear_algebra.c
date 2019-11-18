@@ -1,24 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_floor_color.c                                :+:      :+:    :+:   */
+/*   linear_algebra.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/15 09:29:32 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/18 02:43:36 by cacharle         ###   ########.fr       */
+/*   Created: 2019/11/18 01:28:01 by cacharle          #+#    #+#             */
+/*   Updated: 2019/11/18 01:32:41 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-t_bool	parse_floor_color(t_parsing *parsing, char *line)
+t_vector vector_add(t_vector a, t_vector b)
 {
-	line++;
-	parsing->floor_color.rgb.r = ft_atoi(line);
-	line = ft_strchr(line, ',') + 1;
-	parsing->floor_color.rgb.g = ft_atoi(line);
-	line = ft_strchr(line, ',') + 1;
-	parsing->floor_color.rgb.b = ft_atoi(line);
-	return (TRUE);
+	a.x += b.x;
+	a.y += b.y;
+	return a;
+}
+
+t_vector vector_scale(t_vector v, double scalar)
+{
+	v.x *= scalar;
+	v.y *= scalar;
+	return v;
+}
+
+/*
+** rotate counter clockwise
+*/
+
+t_vector vector_rotate(t_vector v, double angle)
+{
+	t_vector rotated;
+
+	rotated.x = cos(angle) * v.x  - sin(angle) * v.y;
+	rotated.y = sin(angle) * v.x  + cos(angle) * v.y;
+	return (rotated);
 }

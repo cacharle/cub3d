@@ -14,12 +14,14 @@ t_state		*create_state(void *mlx_ptr, void *window_ptr, t_parsing *parsing)
 	state->pos.x = 1.0;
 	state->pos.y = 1.0;
 	state->dir.x = 1.0;
-	state->dir.y = 0.0;
+	state->dir.y = 1.0;
 	state->plane.x = 0.0;
 	state->plane.y = 0.66;
 	state->map = parsing->map;
 	state->map_width = parsing->map_width;
 	state->map_height = parsing->map_height;
+	state->ceilling_color = parsing->ceilling_color;
+	state->floor_color = parsing->floor_color;
 	return (state);
 }
 
@@ -44,6 +46,7 @@ int graphics_update(void *param)
 	/* for (int j = 0; j < 4; j++) */
 	/* mlx_pixel_put(state->mlx_ptr, state->window_ptr, x + x2 + i - 2,y + y2 + j - 2, 0x00ffff00); */
 
+	mlx_clear_window(state->mlx_ptr, state->window_ptr);
 	int x;
 
 	x = -1;
@@ -85,13 +88,13 @@ void draw_column(t_state *state, int x)
 	int map_x = (int)state->pos.x;
 	int map_y = (int)state->pos.y;
 
-	/* dist to first encounter wall */
+	/* dist to first encountered wall */
 	double side_dist_x;
 	double side_dist_y;
 
 	/* delta between grid lines from ray percepective */
-	double delta_dist_x = fabs(1.0 / ray.x);
-	double delta_dist_y = fabs(1.0 / ray.y);
+	double delta_dist_x = sqrt(1 + (SQUARE(ray.y) / SQUARE(ray.x))); //fabs(1.0 / ray.x);
+	double delta_dist_y = sqrt(1 + (SQUARE(ray.x) / SQUARE(ray.y))); //hfabs(1.0 / ray.y);
 
 	/* dist to wall (perpendicular to avoid fisheye effect) */
 	double perp_wall_dist;
@@ -100,24 +103,18 @@ void draw_column(t_state *state, int x)
 	int map_step_x = ray.x < 0 ? -1 : 1;
 	int map_step_y = ray.y < 0 ? -1 : 1;
 
-	if (ray.x < 0)
-		side_dist_x = (state->pos.x - map_x) * delta_dist_x;
-	else
-		side_dist_x =  (map_x + 1.0 - state->pos.x) * delta_dist_x;
-
-	if (ray.y < 0)
-		side_dist_y = (state->pos.y - map_y) * delta_dist_y;
-	else
-		side_dist_y =  (map_y + 1.0 - state->pos.y) * delta_dist_y;
+	side_dist_x = ray.x < 0 ? state->pos.x - map_x : map_x + 1.0 - state->pos.x;
+	side_dist_x *= delta_dist_x;
+	side_dist_y = ray.y < 0 ? state->pos.y - map_y : map_y + 1.0 - state->pos.y;
+	side_dist_y *= delta_dist_y;
 
 	t_side side;
-	int hit = FALSE;
-	while (!hit)
+	while (TRUE)
 	{
 		if (side_dist_x < side_dist_y)
 		{
 			side_dist_x += delta_dist_x; /* increment real dist */
-			map_x += map_step_x; /* increment map dist */
+			map_x += map_step_x;         /* increment map dist */
 			side = SIDE_WEST_EAST;
 		}
 		else
@@ -134,35 +131,18 @@ void draw_column(t_state *state, int x)
 	else //if (side == SIDE_NORTH_SOUTH)
 		perp_wall_dist = (map_y - state->pos.y + (1 - map_step_y) / 2) / ray.y;
 
-
 	int line_height = (int)(state->window_height / perp_wall_dist);
-	int draw_start = -line_height / 2 + state->window_height / 2;
-	if (draw_start < 0)
-		draw_start = 0;
-	int draw_end = line_height / 2 + state->window_height / 2;
-	if (draw_end >= state->window_height)
-		draw_end = state->window_height - 1;
+	int draw_start = state->window_height / 2 - line_height / 2;
+	/* if (draw_start < 0) */
+	/* 	draw_start = 0; */
+	int draw_end =  state->window_height / 2 + line_height / 2;
+	/* if (draw_end >= state->window_height) */
+	/* 	draw_end = state->window_height - 1; */
 
+	/* for (int i = 0; i < draw_start; i++) */
+	/* 	mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i, state->ceilling_color.hexcode); */
 	for (int i = draw_start; i < draw_end; i++)
 		mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i, 0x00ffffff);
+	/* for (int i = draw_end; i < state->window_height; i++) */
+	/* 	mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i, state->floor_color.hexcode); */
 }
-
-t_vector vector_add(t_vector a, t_vector b)
-{
-	a.x += b.x;
-	a.y += b.y;
-	return a;
-}
-
-t_vector vector_scale(t_vector v, double scalar)
-{
-	v.x *= scalar;
-	v.y *= scalar;
-	return v;
-}
-
-
-/* sqrt( x^2 + y^2 ) / x */
-
-
-
