@@ -6,15 +6,20 @@ t_state		*create_state(void *mlx_ptr, void *window_ptr, t_parsing *parsing)
 
 	if ((state = (t_state*)malloc(sizeof(t_state))) == NULL)
 		return (NULL);
+	if ((state->window_img = mlx_new_image(mlx_ptr, parsing->resolution_width, parsing->resolution_height)) == NULL)
+		return (NULL);
+	state->window_buf = mlx_get_data_addr(state->window_img,
+			&state->window_img_depth, &state->window_img_line_size, &state->window_img_endian);
 	state->mlx_ptr = mlx_ptr;
 	state->window_ptr = window_ptr;
 	state->window_width = parsing->resolution_width;
 	state->window_height = parsing->resolution_height;
 	state->running = TRUE;
-	state->pos.x = 1.0;
-	state->pos.y = 1.0;
+	state->pos.x = 1.1;
+	state->pos.y = 1.1;
+	/* need to be normalized */
 	state->dir.x = 1.0;
-	state->dir.y = 1.0;
+	state->dir.y = 0.0;
 	state->plane.x = 0.0;
 	state->plane.y = 0.66;
 	state->map = parsing->map;
@@ -27,28 +32,16 @@ t_state		*create_state(void *mlx_ptr, void *window_ptr, t_parsing *parsing)
 
 int graphics_update(void *param)
 {
-	t_state *state = param;
+	int x;
+	t_state *state;
+   
+	state = param;
 	if (!state->running)
 	{
 		mlx_destroy_window(state->mlx_ptr, state->window_ptr);
 		exit(0);
 	}
-	/* int color = 0x00FFFFFF; */
-	/* int x = state->pos.x; */
-	/* int y = state->pos.y; */
-	/* for (int i = 0; i < 4; i++) */
-	/* for (int j = 0; j < 4; j++) */
-	/* mlx_pixel_put(state->mlx_ptr, state->window_ptr, x + i - 2,y + j - 2, 0x00ffffff); */
-
-	/* int x2 = state->dir.x; */
-	/* int y2 = state->dir.y; */
-	/* for (int i = 0; i < 4; i++) */
-	/* for (int j = 0; j < 4; j++) */
-	/* mlx_pixel_put(state->mlx_ptr, state->window_ptr, x + x2 + i - 2,y + y2 + j - 2, 0x00ffff00); */
-
 	mlx_clear_window(state->mlx_ptr, state->window_ptr);
-	int x;
-
 	x = -1;
 	while (++x < state->window_width)
 		draw_column(state, x);
@@ -127,22 +120,34 @@ void draw_column(t_state *state, int x)
 			break;
 	}
 	if (side == SIDE_WEST_EAST)
-		perp_wall_dist = (map_x - state->pos.x + (1 - map_step_x) / 2) / ray.x;
+		perp_wall_dist = ((double)map_x - state->pos.x + (map_step_x == -1 ? 1 : 0)) / ray.x;
 	else //if (side == SIDE_NORTH_SOUTH)
-		perp_wall_dist = (map_y - state->pos.y + (1 - map_step_y) / 2) / ray.y;
+		perp_wall_dist = ((double)map_y - state->pos.y + (map_step_y == -1 ? 1 : 0)) / ray.y;
+	/* perp_wall_dist = sqrt(SQUARE(state->pos.x - side_dist_x) + SQUARE(state->pos.y - side_dist_y)); */
 
-	int line_height = (int)(state->window_height / perp_wall_dist);
+	int line_height;
+	/* if (perp_wall_dist <= 0) */
+	/* 	line_height = state->window_height; */
+	/* else */
+		line_height = (int)(state->window_height / perp_wall_dist);
+	/* printf("%f\n", perp_wall_dist); */
+	/* printf("%d\n", line_height); */
 	int draw_start = state->window_height / 2 - line_height / 2;
-	/* if (draw_start < 0) */
-	/* 	draw_start = 0; */
+	if (draw_start < 0)
+		draw_start = 0;
 	int draw_end =  state->window_height / 2 + line_height / 2;
-	/* if (draw_end >= state->window_height) */
-	/* 	draw_end = state->window_height - 1; */
+	if (draw_end >= state->window_height)
+		draw_end = state->window_height - 1;
 
-	/* for (int i = 0; i < draw_start; i++) */
-	/* 	mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i, state->ceilling_color.hexcode); */
-	for (int i = draw_start; i < draw_end; i++)
-		mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i, 0x00ffffff);
-	/* for (int i = draw_end; i < state->window_height; i++) */
-	/* 	mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i, state->floor_color.hexcode); */
+	int i;
+	i = 0;
+	while (i < draw_start )
+		state->window_buf[i * state->window_width + x] = state->ceilling_color.hexcode;
+		/* mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i++, state->ceilling_color.hexcode); */
+	while (i < draw_end)
+		state->window_buf[i * state->window_width + x] = 0x00ffffff;
+		/* mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i++, 0x00ffffff); */
+	while (i < state->window_height)
+		state->window_buf[i * state->window_width + x] = state->floor_color.hexcode;
+		/* mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i++, state->floor_color.hexcode); */
 }

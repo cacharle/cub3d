@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/18 02:43:17 by cacharle         ###   ########.fr       */
+/*   Updated: 2019/11/18 19:00:20 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -22,6 +22,9 @@
 # define MLXK_D 2
 # define MLXK_LEFT 123
 # define MLXK_RIGHT 124
+
+# define MLX_LITTLE_ENDIAN 0
+# define MLX_BIG_ENDIAN 1
 
 # include <unistd.h>
 # include <fcntl.h>
@@ -43,16 +46,16 @@ typedef struct
 	double	y;
 }			t_vector;
 
-typedef struct
+typedef union
 {
-	int		hexcode;
+	unsigned int	hexcode;
 	struct
 	{
-		t_byte b;
-		t_byte g;
-		t_byte r;
-		t_byte empty;
-	}	rgb;	
+		t_byte		empty;
+		t_byte		r;
+		t_byte		g;
+		t_byte		b;
+	}				rgb;	
 }		t_color;
 
 typedef enum
@@ -84,6 +87,8 @@ typedef struct
 	int		map_height;
 }			t_parsing;
 
+typedef unsigned int* t_image;
+
 typedef struct	s_state
 {
 	t_bool		running;
@@ -99,6 +104,10 @@ typedef struct	s_state
 	int			map_height;
 	t_color		ceilling_color;
 	t_color		floor_color;
+	t_image		window_buf;
+	int			window_img_depth;
+	int			window_img_line_size;
+	int			window_img_endian;
 }				t_state;
 
 typedef t_bool	(*t_option_parser_func)(t_parsing *parsing, char *line);

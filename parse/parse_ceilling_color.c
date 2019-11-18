@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 09:31:32 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/18 02:43:46 by cacharle         ###   ########.fr       */
+/*   Updated: 2019/11/18 17:22:49 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,13 @@
 t_bool	parse_ceilling_color(t_parsing *parsing, char *line)
 {
 	line++;
-	parsing->ceilling_color.rgb.r = ft_atoi(line);
+	if ((parsing->ceilling_color.rgb.r = ft_atoi(line)) > 255)
+		return (FALSE);
 	line = ft_strchr(line, ',') + 1;
-	parsing->ceilling_color.rgb.g = ft_atoi(line);
+	if ((parsing->ceilling_color.rgb.g = ft_atoi(line)) > 255)
+		return (FALSE);
 	line = ft_strchr(line, ',') + 1;
-	parsing->ceilling_color.rgb.b = ft_atoi(line);
+	if ((parsing->ceilling_color.rgb.b = ft_atoi(line)) > 255)
+		return (FALSE);
 	return (TRUE);
 }

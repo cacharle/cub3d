@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 09:29:32 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/18 02:43:36 by cacharle         ###   ########.fr       */
+/*   Updated: 2019/11/18 17:23:26 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,13 @@
 t_bool	parse_floor_color(t_parsing *parsing, char *line)
 {
 	line++;
-	parsing->floor_color.rgb.r = ft_atoi(line);
+	if ((parsing->floor_color.rgb.r = ft_atoi(line)) > 255)
+		return (FALSE);
 	line = ft_strchr(line, ',') + 1;
-	parsing->floor_color.rgb.g = ft_atoi(line);
+	if ((parsing->floor_color.rgb.g = ft_atoi(line)) > 255)
+		return (FALSE);
 	line = ft_strchr(line, ',') + 1;
-	parsing->floor_color.rgb.b = ft_atoi(line);
+	if ((parsing->floor_color.rgb.b = ft_atoi(line)) > 255)
+		return (FALSE);
 	return (TRUE);
 }

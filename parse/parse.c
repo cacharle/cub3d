@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 09:29:21 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/15 09:32:54 by cacharle         ###   ########.fr       */
+/*   Updated: 2019/11/18 17:21:38 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ t_parsing	*parse(char *filename)
 	if ((parsing = (t_parsing*)malloc(sizeof(t_parsing))) == NULL)
 		return (NULL);
 	parsing->map = NULL;
+	parsing->ceilling_color.hexcode = 0;
+	parsing->floor_color.hexcode = 0;
 	i = -1;
 	while (lines[++i] != NULL)
 	{
