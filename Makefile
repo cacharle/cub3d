@@ -2,7 +2,7 @@ LIBFT_PATH = ./libft
 MINILIBX_PATH = ./miniLibX
 
 CC = gcc
-CCFLAGS = -I$(LIBFT_PATH) -I$(MINILIBX_PATH) -I. -Wall -Wextra #-Werror
+CCFLAGS = -I$(LIBFT_PATH) -I$(MINILIBX_PATH) -I. -Wall -Wextra -g #-Werror
 LDFLAGS = -L$(LIBFT_PATH) -lft \
 		  -L$(MINILIBX_PATH) -lmlx \
 		  -framework OpenGL -framework AppKit -lm

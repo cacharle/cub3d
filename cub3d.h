@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/18 19:00:20 by cacharle         ###   ########.fr       */
+/*   Updated: 2019/11/19 17:38:22 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -87,7 +87,16 @@ typedef struct
 	int		map_height;
 }			t_parsing;
 
-typedef unsigned int* t_image;
+typedef struct
+{
+	int		width;
+	int 	height;
+	void	*id;
+	char	*data;
+	int		depth;
+	int		size_line;
+	int		endian;
+}			t_image;
 
 typedef struct	s_state
 {
@@ -104,10 +113,11 @@ typedef struct	s_state
 	int			map_height;
 	t_color		ceilling_color;
 	t_color		floor_color;
-	t_image		window_buf;
-	int			window_img_depth;
-	int			window_img_line_size;
-	int			window_img_endian;
+	t_image		window_img;
+	t_image		north_texture;
+	t_image		south_texture;
+	t_image		west_texture;
+	t_image		east_texture;
 }				t_state;
 
 typedef t_bool	(*t_option_parser_func)(t_parsing *parsing, char *line);
@@ -117,6 +127,12 @@ typedef struct				s_option_parser
 	char					*id;
 	t_option_parser_func	func;
 }							t_option_parser;
+
+typedef enum
+{
+	SIDE_NORTH_SOUTH,
+	SIDE_WEST_EAST
+}	t_side;
 
 /*
 ** parse.c
@@ -152,10 +168,9 @@ int			handle_key(int key, void *param);
 */
 
 t_state		*create_state(void *mlx_ptr, void *window_ptr, t_parsing *parsing);
-int graphics_update(void *param);
-void draw_column(t_state *state, int x);
-t_vector vector_add(t_vector a, t_vector b);
-t_vector vector_scale(t_vector v, double scalar);
+int			graphics_update(void *param);
+void		draw_column(t_state *state, int x);
+void		write_color(char *data, int y, int x, t_color color);
 
 /*
 ** render.c

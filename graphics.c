@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   graphics.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/19 16:39:57 by cacharle          #+#    #+#             */
+/*   Updated: 2019/11/19 17:50:51 by cacharle         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 t_state		*create_state(void *mlx_ptr, void *window_ptr, t_parsing *parsing)
@@ -6,10 +18,28 @@ t_state		*create_state(void *mlx_ptr, void *window_ptr, t_parsing *parsing)
 
 	if ((state = (t_state*)malloc(sizeof(t_state))) == NULL)
 		return (NULL);
-	if ((state->window_img = mlx_new_image(mlx_ptr, parsing->resolution_width, parsing->resolution_height)) == NULL)
+	state->window_img.id = mlx_new_image(mlx_ptr, parsing->resolution_width, parsing->resolution_height);
+	state->window_img.width = parsing->resolution_width;
+	state->window_img.height = parsing->resolution_height;
+	state->window_img.data = mlx_get_data_addr(state->window_img.id,
+			&state->window_img.depth, &state->window_img.size_line, &state->window_img.endian);
+	printf("%d\n", state->window_img.width);
+	printf("%d\n", state->window_img.height);
+	printf("%d\n", state->window_img.depth);
+	printf("%d\n", state->window_img.size_line);
+	printf("%d\n", state->window_img.endian);
+
+	state->north_texture.id = mlx_xpm_file_to_image(mlx_ptr,
+			parsing->north_texture_path, &state->north_texture.width, &state->north_texture.height);
+	if (state->north_texture.id == NULL)
 		return (NULL);
-	state->window_buf = mlx_get_data_addr(state->window_img,
-			&state->window_img_depth, &state->window_img_line_size, &state->window_img_endian);
+	state->north_texture.data = mlx_get_data_addr(state->north_texture.id, &state->north_texture.depth,
+		   	&state->north_texture.size_line, &state->north_texture.endian);
+	/* printf("%d\n", state->north_texture.endian); */
+	/* state->south_texture = ; */
+	/* state->west_texture = ; */
+	/* state->east_texture = ; */
+
 	state->mlx_ptr = mlx_ptr;
 	state->window_ptr = window_ptr;
 	state->window_width = parsing->resolution_width;
@@ -46,14 +76,14 @@ int graphics_update(void *param)
 	while (++x < state->window_width)
 		draw_column(state, x);
 	
+	/* for (int i = 0; i < 200000; i++) */
+	/* 	state->window_img.data[i] = 127; */
+	mlx_put_image_to_window(state->mlx_ptr, state->window_ptr, state->window_img.id, 0, 0);
+	/* mlx_put_image_to_window(state->mlx_ptr, state->window_ptr, state->north_texture.id, 0, 0); */
+	/* for (int i = 0; i < 200; i++) */
+	/* 	printf("%d ", state->window_img.data[i]); */
 	return (0);
 }
-
-typedef enum
-{
-	SIDE_NORTH_SOUTH,
-	SIDE_WEST_EAST
-}	t_side;
 
 void draw_column(t_state *state, int x)
 {
@@ -139,15 +169,18 @@ void draw_column(t_state *state, int x)
 	if (draw_end >= state->window_height)
 		draw_end = state->window_height - 1;
 
+	int tex_x;
+
+	/* int wall_x = side == SIDE_WEST_EAST ? pos */
+	
 	int i;
 	i = 0;
-	while (i < draw_start )
-		state->window_buf[i * state->window_width + x] = state->ceilling_color.hexcode;
-		/* mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i++, state->ceilling_color.hexcode); */
+	t_color white;
+	white.hexcode = 0x00ffffff;
+	while (i < draw_start)
+		((t_color*)state->window_img.data)[i++ * state->window_img.width + x] = state->ceilling_color;
 	while (i < draw_end)
-		state->window_buf[i * state->window_width + x] = 0x00ffffff;
-		/* mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i++, 0x00ffffff); */
+		((t_color*)state->window_img.data)[i++ * state->window_img.width + x] = white;
 	while (i < state->window_height)
-		state->window_buf[i * state->window_width + x] = state->floor_color.hexcode;
-		/* mlx_pixel_put(state->mlx_ptr, state->window_ptr, x, i++, state->floor_color.hexcode); */
+		((t_color*)state->window_img.data)[i++ * state->window_img.width + x] = state->floor_color;
 }
