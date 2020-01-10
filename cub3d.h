@@ -6,13 +6,20 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/19 17:38:22 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/10 11:29:16 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
 
 #ifndef CUB3D_H
 # define CUB3D_H
+
+# include <unistd.h>
+# include <fcntl.h>
+# include <stdlib.h>
+# include <math.h>
+# include "mlx.h"
+# include "libft.h"
 
 # define WINDOW_TITLE "cub3D"
 # define MLXK_ESC 53
@@ -25,13 +32,6 @@
 
 # define MLX_LITTLE_ENDIAN 0
 # define MLX_BIG_ENDIAN 1
-
-# include <unistd.h>
-# include <fcntl.h>
-# include <stdlib.h>
-# include <math.h>
-# include "mlx.h"
-# include "libft.h"
 
 # define TRUE 1
 # define FALSE 0
@@ -55,18 +55,18 @@ typedef union
 		t_byte		r;
 		t_byte		g;
 		t_byte		b;
-	}				rgb;	
+	}				rgb;
 }		t_color;
 
 typedef enum
 {
-	CELL_EMPTY,
-	CELL_WALL,
-	CELL_ITEM,
-	CELL_LOOK_NORTH,
-	CELL_LOOK_SOUTH,
-	CELL_LOOK_WEST,
-	CELL_LOOK_EAST
+	CELL_EMPTY = 1 << 1,
+	CELL_WALL = 1 << 2,
+	CELL_ITEM = 1 << 3,
+	CELL_LOOK_NORTH = 1 << 4,
+	CELL_LOOK_SOUTH = 1 << 5,
+	CELL_LOOK_WEST = 1 << 6,
+	CELL_LOOK_EAST = 1 << 7
 }	t_cell;
 
 typedef t_cell** t_map;
@@ -114,19 +114,19 @@ typedef struct	s_state
 	t_color		ceilling_color;
 	t_color		floor_color;
 	t_image		window_img;
-	t_image		north_texture;
-	t_image		south_texture;
-	t_image		west_texture;
-	t_image		east_texture;
+	t_image		*north_texture;
+	t_image		*south_texture;
+	t_image		*west_texture;
+	t_image		*east_texture;
 }				t_state;
-
-typedef t_bool	(*t_option_parser_func)(t_parsing *parsing, char *line);
 
 typedef struct				s_option_parser
 {
 	char					*id;
 	t_option_parser_func	func;
 }							t_option_parser;
+
+typedef t_bool	(*t_option_parser_func)(t_parsing *parsing, char *line);
 
 typedef enum
 {
@@ -161,28 +161,37 @@ t_bool parse_ceilling_color(t_parsing *parsing, char *line);
 ** event.c
 */
 
-int			handle_key(int key, void *param);
+int			handle_keydown(int key, void *param);
 
 /*
 ** graphics.c
 */
 
-t_state		*create_state(void *mlx_ptr, void *window_ptr, t_parsing *parsing);
-int			graphics_update(void *param);
-void		draw_column(t_state *state, int x);
-void		write_color(char *data, int y, int x, t_color color);
+t_state		*state_new(void *mlx_ptr, void *window_ptr, t_parsing *parsing);
+void		state_new_player(t_state *state, t_parsing *parsing);
+void		state_destroy(t_state *state);
+t_image		*load_texture(char *path);
 
 /*
 ** render.c
 */
 
+int			render_update(void *param);
+void		render_column(t_state *state, int x);
 
 /*
-** linear_algebra.c
+** vector.c
 */
 
-t_vector vector_add(t_vector a, t_vector b);
-t_vector vector_scale(t_vector v, double scalar);
-t_vector vector_rotate(t_vector v, double angle);
+t_vector	vector_add(t_vector a, t_vector b);
+t_vector	vector_scale(t_vector v, double scalar);
+t_vector	vector_rotate(t_vector v, double angle);
+double		vector_norm(t_vector v);
+
+/*
+** error.c
+*/
+
+void	error_put_usage(void);
 
 #endif

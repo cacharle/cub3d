@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 01:28:01 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/18 01:32:41 by cacharle         ###   ########.fr       */
+/*   Updated: 2019/11/19 18:21:22 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,9 @@ t_vector vector_rotate(t_vector v, double angle)
 	rotated.x = cos(angle) * v.x  - sin(angle) * v.y;
 	rotated.y = sin(angle) * v.x  + cos(angle) * v.y;
 	return (rotated);
+}
+
+double	vector_norm(t_vector v)
+{
+	return sqrt(SQUARE(v.x) + SQUARE(v.y));
 }

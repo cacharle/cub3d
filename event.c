@@ -6,16 +6,16 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:39:37 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/18 17:49:10 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/10 11:27:56 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
 #define ROTATE_SIZE (M_PI / 20.0)
-#define MOVE_SPEED 0.5
+#define MOVE_SPEED 0.25
 
-int	handle_key(int key, void *param)
+int	handle_keydown(int key, void *param)
 {
 	t_state	*state;
 
