@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/10 11:29:16 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 10:24:44 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -51,10 +51,10 @@ typedef union
 	unsigned int	hexcode;
 	struct
 	{
-		t_byte		empty;
 		t_byte		r;
 		t_byte		g;
 		t_byte		b;
+		t_byte		alpha;
 	}				rgb;
 }		t_color;
 
@@ -71,21 +71,16 @@ typedef enum
 
 typedef t_cell** t_map;
 
-typedef struct
+enum
 {
-	int		resolution_height;
-	int		resolution_width;
-	char	*north_texture_path;
-	char	*south_texture_path;
-	char	*west_texture_path;
-	char	*east_texture_path;
-	char	*sprite_texture_path;
-	t_color	floor_color;
-	t_color	ceilling_color;
-	t_map	map;
-	int		map_width;
-	int		map_height;
-}			t_parsing;
+	TEX_NORTH,
+	TEX_SOUTH,
+	TEX_WEST,
+	TEX_EAST,
+	TEX_SPRITE
+};
+
+# define TEXTURES_NUM (TEX_SPRITE - TEX_NORTH + 1)
 
 typedef struct
 {
@@ -113,20 +108,18 @@ typedef struct	s_state
 	int			map_height;
 	t_color		ceilling_color;
 	t_color		floor_color;
-	t_image		window_img;
-	t_image		*north_texture;
-	t_image		*south_texture;
-	t_image		*west_texture;
-	t_image		*east_texture;
+	t_image		window;
+	char		*textures_path[TEXTURES_NUM];
+	t_image		textures[TEXTURES_NUM];
 }				t_state;
+
+typedef t_bool	(*t_option_parser_func)(t_state *state, char *line);
 
 typedef struct				s_option_parser
 {
 	char					*id;
 	t_option_parser_func	func;
 }							t_option_parser;
-
-typedef t_bool	(*t_option_parser_func)(t_parsing *parsing, char *line);
 
 typedef enum
 {
@@ -135,42 +128,53 @@ typedef enum
 }	t_side;
 
 /*
-** parse.c
+** parse/parse.c
 */
 
-t_parsing	*parse(char *filename);
+t_state		*parse(char *filename);
 char		**get_file_lines(char *filename);
-t_bool		parse_line(t_parsing *parsing, char *line);
-t_parsing	*parse_map(t_parsing *parsing, char **lines);
+t_bool		parse_line(t_state *state, char *line);
+t_state		*parse_map(t_state *state, char **lines);
 t_cell		*create_map_row(char *line);
 
 /*
-** parse_*.c
+** parse/parse_resolution.c
 */
 
-t_bool parse_resolution(t_parsing *parsing, char *line);
-t_bool parse_north_texture(t_parsing *parsing, char *line);
-t_bool parse_south_texture(t_parsing *parsing, char *line);
-t_bool parse_west_texture(t_parsing *parsing, char *line);
-t_bool parse_east_texture(t_parsing *parsing, char *line);
-t_bool parse_sprite_texture(t_parsing *parsing, char *line);
-t_bool parse_floor_color(t_parsing *parsing, char *line);
-t_bool parse_ceilling_color(t_parsing *parsing, char *line);
+t_bool		parse_resolution(t_state *state, char *line);
+
+/*
+** parse/parse_textures.c
+*/
+
+t_bool		parse_north_texture(t_state *state, char *line);
+t_bool		parse_south_texture(t_state *state, char *line);
+t_bool		parse_west_texture(t_state *state, char *line);
+t_bool		parse_east_texture(t_state *state, char *line);
+t_bool		parse_sprite_texture(t_state *state, char *line);
+
+/*
+** parse/parse_color.c
+*/
+
+t_bool		parse_floor_color(t_state *state, char *line);
+t_bool		parse_ceilling_color(t_state *state, char *line);
 
 /*
 ** event.c
 */
 
-int			handle_keydown(int key, void *param);
+int			event_keydown(int key, void *param);
 
 /*
-** graphics.c
+** state.c
 */
 
-t_state		*state_new(void *mlx_ptr, void *window_ptr, t_parsing *parsing);
-void		state_new_player(t_state *state, t_parsing *parsing);
-void		state_destroy(t_state *state);
-t_image		*load_texture(char *path);
+t_state		*state_new(t_state *state);
+void		state_init_player(t_state *state);
+t_state		*state_new_empty(void);
+void		*state_destroy(t_state *state);
+void		load_texture(void *mlx_ptr, t_image *image, char *path);
 
 /*
 ** render.c
@@ -192,6 +196,13 @@ double		vector_norm(t_vector v);
 ** error.c
 */
 
-void	error_put_usage(void);
+void		error_put_usage_exit(char *name);
+
+/*
+** helper.c
+*/
+
+t_bool		helper_is_player_cell(t_cell cell);
+void		helper_free_splited(char **splited);
 
 #endif

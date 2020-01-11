@@ -8,11 +8,9 @@ LDFLAGS = -L$(LIBFT_PATH) -lft \
 		  -framework OpenGL -framework AppKit -lm
 
 NAME = cub3D
-SRC = main.c event.c parse/parse.c parse/parse_east_texture.c \
-	  parse/parse_north_texture.c parse/parse_south_texture.c \
-	  parse/parse_west_texture.c parse/parse_ceilling_color.c \
-	  parse/parse_floor_color.c parse/parse_resolution.c \
-	  parse/parse_sprite_texture.c state.c vector.c render.c
+SRC = main.c event.c parse/parse.c parse/parse_textures.c \
+	  parse/parse_color.c parse/parse_resolution.c \
+	  state.c vector.c render.c helper.c error.c
 OBJ = $(SRC:.c=.o)
 INCLUDE = cub3d.h
 

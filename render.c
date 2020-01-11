@@ -9,19 +9,13 @@ int render_update(void *param)
 	if (!state->running)
 	{
 		state_destroy(state);
-		exit(0);
+		exit(EXIT_SUCCESS);
 	}
 	mlx_clear_window(state->mlx_ptr, state->window_ptr);
 	x = -1;
-	while (++x < state->window_width)
+	while (++x < state->window.width)
 		render_column(state, x);
-
-	/* for (int i = 0; i < 200000; i++) */
-	/* 	state->window_img.data[i] = 127; */
-	mlx_put_image_to_window(state->mlx_ptr, state->window_ptr, state->window_img.id, 0, 0);
-	/* mlx_put_image_to_window(state->mlx_ptr, state->window_ptr, state->north_texture.id, 0, 0); */
-	/* for (int i = 0; i < 200; i++) */
-	/* 	printf("%d ", state->window_img.data[i]); */
+	mlx_put_image_to_window(state->mlx_ptr, state->window_ptr, state->window.id, 0, 0);
 	return (0);
 }
 
@@ -38,7 +32,7 @@ void render_column(t_state *state, int x)
 	 *  #        |         #
 	 *  ####################
 	 */
-	double camera_x = 2 * x / (double)state->window_width - 1;
+	double camera_x = 2 * x / (double)state->window.width - 1;
 
 	/* camera plane length related to current column */
 	t_vector ray;
@@ -99,15 +93,15 @@ void render_column(t_state *state, int x)
 	/* if (perp_wall_dist <= 0) */
 	/* 	line_height = state->window_height; */
 	/* else */
-		line_height = (int)(state->window_height / perp_wall_dist);
+		line_height = (int)(state->window.height / perp_wall_dist);
 	/* printf("%f\n", perp_wall_dist); */
 	/* printf("%d\n", line_height); */
-	int draw_start = state->window_height / 2 - line_height / 2;
+	int draw_start = state->window.height / 2 - line_height / 2;
 	if (draw_start < 0)
 		draw_start = 0;
-	int draw_end =  state->window_height / 2 + line_height / 2;
-	if (draw_end >= state->window_height)
-		draw_end = state->window_height - 1;
+	int draw_end =  state->window.height / 2 + line_height / 2;
+	if (draw_end >= state->window.height)
+		draw_end = state->window.height - 1;
 
 	/* int tex_x; */
 	/* int wall_x = side == SIDE_WEST_EAST ? pos */
@@ -137,11 +131,11 @@ void render_column(t_state *state, int x)
 	t_color white;
 	white.hexcode = 0x00ffffff;
 	while (i < draw_start)
-		((t_color*)state->window_img.data)[i++ * state->window_img.width + x] = state->ceilling_color;
+		((t_color*)state->window.data)[i++ * state->window.width + x] = state->ceilling_color;
 	while (i < draw_end)
-		((t_color*)state->window_img.data)[i++ * state->window_img.width + x] = white;
+		((t_color*)state->window.data)[i++ * state->window.width + x] = white;
 	while (i < state->window_height)
-		((t_color*)state->window_img.data)[i++ * state->window_img.width + x] = state->floor_color;
+		((t_color*)state->window.data)[i++ * state->window.width + x] = state->floor_color;
 }
 
 /* double map_range(double x, double src_lo, double src_hi, double dest_lo, double dest_hi) */

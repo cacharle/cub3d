@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:39:39 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/10 10:59:09 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 10:09:51 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,42 +14,21 @@
 
 int	main(int argc, char **argv)
 {
-	t_parsing	*p;
-	void		*mlx_ptr;
-	void		*window_ptr;
 	t_state		*state;
 
-	if (argc == 3 && ft_strcmp(argv[2], "--save") == 0)
-		return (save_image());
-	else if (argc != 2)
+	/* if (argc == 3 && ft_strcmp(argv[2], "--save") == 0) */
+	/* 	return (save_image()); */
+	/*else*/
+	if (argc != 2)
 		error_put_usage_exit(argv[0]);
-	if ((p = parse(argv[1])) == NULL)
-	{
-		ft_putendl_fd("Error: wrong file format", STDERR_FILENO);
-		return (1);
-	}
-
-	if ((mlx_ptr = mlx_init()) == NULL)
-	{
-		ft_putendl_fd("Error: minilibx init", STDERR_FILENO);
-		return (1);
-	}
-	if ((window_ptr = mlx_new_window(mlx_ptr, p->resolution_width,
-		p->resolution_height, WINDOW_TITLE)) == NULL)
-	{
-		ft_putendl_fd("Error: minilibx window creation", STDERR_FILENO);
-		return (1);
-	}
-	if ((state = state_new(mlx_ptr, window_ptr, p)) == NULL)
+	if ((state = state_new(parse(argv[1]))) == NULL)
 	{
 		ft_putendl_fd("Error: state creation", STDERR_FILENO);
 		return (1);
 	}
-
-	mlx_hook(window_ptr, 2, (1L<<1), handle_keydown, (void*)state);
-	mlx_loop_hook(mlx_ptr, graphics_update, (void*)state);
-	mlx_loop(mlx_ptr);
-
+	mlx_hook(state->window_ptr, 2, (1L << 1), event_keydown, (void*)state);
+	mlx_loop_hook(state->mlx_ptr, render_update, (void*)state);
+	mlx_loop(state->mlx_ptr);
 	return (0);
 }
 

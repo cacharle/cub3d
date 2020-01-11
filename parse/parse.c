@@ -6,60 +6,65 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 09:29:21 by cacharle          #+#    #+#             */
-/*   Updated: 2019/11/18 17:21:38 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 10:12:10 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-t_parsing	*parse(char *filename)
+t_state	*parse(char *filename)
 {
-	int			i;
-	char		**lines;
-	t_parsing	*parsing;
+	int		i;
+	char	**lines;
+	t_state	*state;
 
+	if ((state = state_new_empty()) == NULL)
+		return (NULL);
 	if ((lines = get_file_lines(filename)) == NULL)
-		return (NULL);
-	if ((parsing = (t_parsing*)malloc(sizeof(t_parsing))) == NULL)
-		return (NULL);
-	parsing->map = NULL;
-	parsing->ceilling_color.hexcode = 0;
-	parsing->floor_color.hexcode = 0;
+		return (state_destroy(state));
 	i = -1;
 	while (lines[++i] != NULL)
 	{
 		if (*lines[i] == '1')
 			break ;
-		if (!parse_line(parsing, lines[i]))
-			return (NULL);
+		if (!parse_line(state, lines[i]))
+		{
+			helper_free_splited(lines);
+			return (state_destroy(state));
+		}
 	}
-	if ((parsing = parse_map(parsing, lines + i)) == NULL)
-		return (NULL);
-	free(lines);
-	return (parsing);
+	if ((state = parse_map(state, lines + i)) == NULL)
+	{
+		helper_free_splited(lines);
+		return (state_destroy(state));
+	}
+	helper_free_splited(lines);
+	return (state);
 }
 
 char		**get_file_lines(char *filename)
 {
 	int		fd;
 	int		ret;
-	char	*line;
+	char	buf[BUFFER_SIZE];
 	char	*file;
 
 	fd = open(filename, O_RDONLY);
 	if ((file = ft_strdup("")) == NULL)
 		return (NULL);
-	while ((ret = get_next_line(fd, &line)) == 1)
-		if ((file = ft_strjoin_free(file, ft_strjoin_free(line, ft_strdup("\n"), 2), 2)) == NULL)
+	while ((ret = read(fd, buf, BUFFER_SIZE)) > 0)
+	{
+		buf[ret] = '\0';
+		if ((file = ft_strjoin_free(file, buf, 1)) == NULL)
 			return (NULL);
+	}
 	if (ret == -1)
 		return (NULL);
-	free(line);
 	close(fd);
 	return (ft_split(file, '\n'));
 }
 
-static t_option_parser	option_parsers[] =
+static t_option_parser	g_option_parsers[] =
 {
 	{"R", parse_resolution},
 	{"NO", parse_north_texture},
@@ -71,9 +76,9 @@ static t_option_parser	option_parsers[] =
 	{"C", parse_ceilling_color}
 };
 
-#define OPTIONS_PARSERS_SIZE (sizeof(option_parsers) / sizeof(t_option_parser))
+#define OPTIONS_PARSERS_SIZE (sizeof(g_option_parsers) / sizeof(t_option_parser))
 
-t_bool		parse_line(t_parsing *parsing, char *line)
+t_bool		parse_line(t_state *state, char *line)
 {
 	int i;
 
@@ -81,12 +86,14 @@ t_bool		parse_line(t_parsing *parsing, char *line)
 		return (TRUE);
 	i = -1;
 	while (++i < (int)OPTIONS_PARSERS_SIZE)
-		if (ft_strncmp(option_parsers[i].id, line, ft_strlen(option_parsers[i].id)) == 0)
-			return (option_parsers[i].func(parsing, line + ft_strlen(option_parsers[i].id)));
+		if (ft_strncmp(g_option_parsers[i].id, line,
+				ft_strlen(g_option_parsers[i].id)) == 0)
+			return (g_option_parsers[i].func(
+					state, line + ft_strlen(g_option_parsers[i].id) + 1));
 	return (FALSE);
 }
 
-t_parsing	*parse_map(t_parsing *parsing, char **lines)
+t_state	*parse_map(t_state *state, char **lines)
 {
 	int		i;
 
@@ -94,15 +101,15 @@ t_parsing	*parse_map(t_parsing *parsing, char **lines)
 	while (lines[++i] != NULL)
 		if (*lines[i] != '1')
 			return (NULL);
-	parsing->map_height = i;
-	if ((parsing->map = (t_map)malloc(sizeof(t_cell*) * i)) == NULL)
+	state->map_height = i;
+	if ((state->map = (t_map)malloc(sizeof(t_cell*) * i)) == NULL)
 		return (NULL);
-	parsing->map_width = ft_strcount(*lines, '1');
+	state->map_width = ft_strcount(*lines, '1');
 	i = -1;
 	while (lines[++i] != NULL)
-		if ((parsing->map[i] = create_map_row(lines[i])) == NULL)
+		if ((state->map[i] = create_map_row(lines[i])) == NULL)
 			return (NULL);
-	return (parsing);
+	return (state);
 }
 
 t_cell		*create_map_row(char *line)
