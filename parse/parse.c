@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 09:29:21 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 10:12:10 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 11:29:45 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ t_state	*parse(char *filename)
 		return (NULL);
 	if ((lines = get_file_lines(filename)) == NULL)
 		return (state_destroy(state));
+	/* for (int i = 0; lines[i]; i++) */
+	/* 	printf("%d [%s]\n", i, lines[i]); */
 	i = -1;
 	while (lines[++i] != NULL)
 	{
@@ -46,16 +48,17 @@ char		**get_file_lines(char *filename)
 {
 	int		fd;
 	int		ret;
-	char	buf[BUFFER_SIZE];
+	char	buf[BUFFER_SIZE + 1];
 	char	*file;
 
-	fd = open(filename, O_RDONLY);
+	if ((fd = open(filename, O_RDONLY)) < 0)
+		return (NULL);
 	if ((file = ft_strdup("")) == NULL)
 		return (NULL);
 	while ((ret = read(fd, buf, BUFFER_SIZE)) > 0)
 	{
 		buf[ret] = '\0';
-		if ((file = ft_strjoin_free(file, buf, 1)) == NULL)
+		if ((file = ft_strjoin(file, buf)) == NULL)
 			return (NULL);
 	}
 	if (ret == -1)
@@ -122,12 +125,8 @@ t_cell		*create_map_row(char *line)
 	i = 0;
 	while (*line)
 	{
-		if (*line == '0')
-			row[i++] = CELL_EMPTY;
-		else if (*line == '1')
-			row[i++] = CELL_WALL;
-		else if (*line == '2')
-			row[i++] = CELL_ITEM;
+		if (*line == '0' || *line == '1' || *line == '2')
+			row[i++] = *line - '0';
 		else if (*line == 'N')
 			row[i++] = CELL_LOOK_NORTH;
 		else if (*line == 'S')

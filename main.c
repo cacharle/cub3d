@@ -6,19 +6,20 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:39:39 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 10:09:51 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 12:33:37 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
+/*
 int	main(int argc, char **argv)
 {
 	t_state		*state;
 
-	/* if (argc == 3 && ft_strcmp(argv[2], "--save") == 0) */
-	/* 	return (save_image()); */
-	/*else*/
+	if (argc == 3 && ft_strcmp(argv[2], "--save") == 0)
+		return (save_image());
+	else
 	if (argc != 2)
 		error_put_usage_exit(argv[0]);
 	if ((state = state_new(parse(argv[1]))) == NULL)
@@ -30,39 +31,51 @@ int	main(int argc, char **argv)
 	mlx_loop_hook(state->mlx_ptr, render_update, (void*)state);
 	mlx_loop(state->mlx_ptr);
 	return (0);
-}
+}*/
 
-/*
-int main(int argc, char argv)
+int main(int argc, char **argv)
 {
-	t_parsing *p = parse(argv[1]);
-	if (p == NULL)
+	(void)argc;
+	t_state *s = parse(argv[1]);
+	if (s == NULL)
 		return (1);
-	printf("R %d %d\n", p->resolution_width, p->resolution_height);
-	printf("NO %s\n", p->north_texture_path);
-	printf("SO %s\n", p->south_texture_path);
-	printf("WE %s\n", p->west_texture_path);
-	printf("EA %s\n\n", p->east_texture_path);
-	printf("S %s\n", p->sprite_texture_path);
-	printf("F %d,%d,%d\n", p->floor_color.r, p->floor_color.g, p->floor_color.b);
-	printf("C %d,%d,%d\n\n", p->ceilling_color.r, p->ceilling_color.g, p->ceilling_color.b);
-
-	printf("%dx%d\n", p->map_height, p->map_width);
-	for (int i = 0; i < p->map_height; i++)
+	if (parse_check(s) == NULL)
 	{
-		for (int j = 0; j < p->map_width; j++)
+		printf("wrong .cub format");
+		return (1);
+	}
+	printf("R %d %d\n", s->window.width, s->window.height);
+	printf("NO %s\n", s->textures_path[TEX_NORTH]);
+	printf("SO %s\n", s->textures_path[TEX_SOUTH]);
+	printf("WE %s\n", s->textures_path[TEX_WEST]);
+	printf("EA %s\n\n", s->textures_path[TEX_EAST]);
+	printf("S %s\n", s->textures_path[TEX_SPRITE]);
+	printf("F %d,%d,%d\n", s->floor_color.rgb.r, s->floor_color.rgb.g, s->floor_color.rgb.b);
+	printf("C %d,%d,%d\n\n", s->ceilling_color.rgb.r, s->ceilling_color.rgb.g, s->ceilling_color.rgb.b);
+
+	printf("%dx%d\n", s->map_height, s->map_width);
+	for (int i = 0; i < s->map_height; i++)
+	{
+		for (int j = 0; j < s->map_width; j++)
 		{
-			if (p->map[i][j] == CELL_WALL)
+			if (s->map[i][j] == CELL_WALL)
 				printf("#");
-			else if (p->map[i][j] == CELL_EMPTY)
+			else if (s->map[i][j] == CELL_EMPTY)
 				printf(" ");
 			else
-				printf("%d", p->map[i][j]);
-			if (j != p->map_width - 1)
+				printf("%d", s->map[i][j]);
+			if (j != s->map_width - 1)
 				printf(" ");
 		}
 		printf("\n");
 	}
+	printf("post state_new\n");
+	if ((s = state_new(s)) == NULL)
+	{
+		printf("Error: state new");
+		return 1;
+	}
+	printf("state->pos [%f %f]\n", s->pos.x, s->pos.y);
+	state_destroy(s);
 	return 0;
 }
-*/

@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 16:39:57 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 10:24:53 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 12:32:13 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,8 @@ void	*state_destroy(t_state *state)
 	while (++i < TEXTURES_NUM)
 	{
 		free(state->textures_path[i]);
-		mlx_destroy_image(state->mlx_ptr, state->textures[i].id);
+		if (state->mlx_ptr != NULL&& state->textures[i].id != NULL)
+			mlx_destroy_image(state->mlx_ptr, state->textures[i].id);
 	}
 	if (state->mlx_ptr && state->window_ptr)
 		mlx_destroy_window(state->mlx_ptr, state->window_ptr);

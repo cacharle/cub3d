@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 10:24:44 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 10:59:58 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -60,13 +60,13 @@ typedef union
 
 typedef enum
 {
-	CELL_EMPTY = 1 << 1,
-	CELL_WALL = 1 << 2,
-	CELL_ITEM = 1 << 3,
-	CELL_LOOK_NORTH = 1 << 4,
-	CELL_LOOK_SOUTH = 1 << 5,
-	CELL_LOOK_WEST = 1 << 6,
-	CELL_LOOK_EAST = 1 << 7
+	CELL_EMPTY = 0,
+	CELL_WALL = 1,
+	CELL_ITEM = 2,
+	CELL_LOOK_NORTH,
+	CELL_LOOK_SOUTH,
+	CELL_LOOK_WEST,
+	CELL_LOOK_EAST
 }	t_cell;
 
 typedef t_cell** t_map;
@@ -136,6 +136,12 @@ char		**get_file_lines(char *filename);
 t_bool		parse_line(t_state *state, char *line);
 t_state		*parse_map(t_state *state, char **lines);
 t_cell		*create_map_row(char *line);
+
+/*
+** parse/parse_check.c
+*/
+
+t_state		*parse_check(t_state *state);
 
 /*
 ** parse/parse_resolution.c

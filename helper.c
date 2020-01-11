@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 07:32:20 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 10:37:54 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 11:22:15 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,12 @@ t_bool	helper_is_player_cell(t_cell cell)
 
 void	helper_free_splited(char **splited)
 {
+	int	i;
+
 	if (splited == NULL)
 		return ;
-	while (splited != NULL)
-		free(*splited++);
+	i = -1;
+	while (splited[++i] != NULL)
+		free(splited[i]);
 	free(splited);
 }
