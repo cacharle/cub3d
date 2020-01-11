@@ -19,7 +19,8 @@ SRC = main.c \
 	  vector.c \
 	  render.c \
 	  helper.c \
-	  error.c
+	  error.c \
+	  capture.c
 OBJ = $(SRC:.c=.o)
 INCLUDE = cub3d.h
 

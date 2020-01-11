@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 12:54:44 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/12 15:35:49 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -51,12 +51,12 @@ typedef union
 	unsigned int	hexcode;
 	struct
 	{
+		t_byte		empty;
 		t_byte		r;
 		t_byte		g;
 		t_byte		b;
-		t_byte		alpha;
 	}				rgb;
-}		t_color;
+}					t_color;
 
 typedef enum
 {
@@ -85,7 +85,7 @@ enum
 typedef struct
 {
 	int		width;
-	int 	height;
+	int		height;
 	void	*id;
 	char	*data;
 	int		depth;
@@ -123,8 +123,8 @@ typedef struct				s_option_parser
 
 typedef enum
 {
-	SIDE_NORTH_SOUTH,
-	SIDE_WEST_EAST
+	SIDE_NS,
+	SIDE_WE
 }	t_side;
 
 /*
@@ -187,6 +187,7 @@ void		load_texture(void *mlx_ptr, t_image *image, char *path);
 */
 
 int			render_update(void *param);
+void		render_update_window(t_state *state);
 void		render_column(t_state *state, int x);
 
 /*
@@ -206,7 +207,8 @@ void		error_put_usage_exit(char *name);
 void		error_put(char *message);
 void		*error_put_return(char *message);
 void		*error_put_return_state_destroy(char *message, t_state *state);
-void		*error_put_return_lines_state_destroy(char *message, t_state *state, char **lines);
+void		*error_put_return_lines_state_destroy(
+				char *message, t_state *state, char **lines);
 
 /*
 ** helper.c
@@ -214,5 +216,13 @@ void		*error_put_return_lines_state_destroy(char *message, t_state *state, char 
 
 t_bool		helper_is_player_cell(t_cell cell);
 void		helper_free_splited(char **splited);
+void		helper_rotate_player(t_state *state, double rotation);
+
+/*
+** capture.c
+*/
+
+int			capture(t_state *state);
+void		write_bmp(t_image *image);
 
 #endif

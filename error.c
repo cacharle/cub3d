@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/01/11 13:33:14 by cacharle          #+#    #+#             */
+/*   Updated: 2020/01/11 13:34:18 by cacharle         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 void	error_put_usage_exit(char *name)
@@ -25,10 +37,11 @@ void	*error_put_return(char *message)
 void	*error_put_return_state_destroy(char *message, t_state *state)
 {
 	state_destroy(state);
-	return error_put_return(message);
+	return (error_put_return(message));
 }
 
-void	*error_put_return_lines_state_destroy(char *message, t_state *state, char **lines)
+void	*error_put_return_lines_state_destroy(
+			char *message, t_state *state, char **lines)
 {
 	helper_free_splited(lines);
 	return (error_put_return_state_destroy(message, state));

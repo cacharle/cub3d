@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 16:39:57 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 13:10:45 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/12 10:37:38 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ t_state	*state_new(t_state *state)
 	i = -1;
 	while (++i < TEXTURES_NUM)
 	{
-		load_texture(state->mlx_ptr, &state->textures[i], state->textures_path[i]);
+		load_texture(state->mlx_ptr, &state->textures[i],
+				state->textures_path[i]);
 		if (state->textures[i].id == NULL)
 			return (error_put_return_state_destroy("load texture", state));
 	}
@@ -37,8 +38,14 @@ t_state	*state_new(t_state *state)
 			state->window.width, state->window.height)) == NULL)
 		return (state_destroy(state));
 	state->window.data = mlx_get_data_addr(state->window.id,
-			&state->window.depth, &state->window.size_line, &state->window.endian);
+			&state->window.depth, &state->window.size_line,
+			&state->window.endian);
 	state_init_player(state);
+	/* printf("%x\n", state->floor_color.rgb.r); */
+	/* printf("%x\n", state->floor_color.rgb.g); */
+	/* printf("%x\n", state->floor_color.rgb.b); */
+	/* printf("endian %d", state->window.endian); */
+			/* return NULL; */
 	return (state);
 }
 
@@ -56,21 +63,9 @@ void	state_init_player(t_state *state)
 			{
 				state->pos.x = (double)j + 0.5;
 				state->pos.y = (double)i + 0.5;
-				// break 2nd loop?
-				break;
 			}
 	}
-	/* need to be normalized */
-	if (state->map[(int)state->pos.y][(int)state->pos.x] == CELL_LOOK_NORTH)
-		state->dir.y = 1.0;
-	else if (state->map[(int)state->pos.y][(int)state->pos.x] == CELL_LOOK_SOUTH)
-		state->dir.y = -1.0;
-	else if (state->map[(int)state->pos.y][(int)state->pos.x] == CELL_LOOK_WEST)
-		state->dir.x = -1.0;
-	else if (state->map[(int)state->pos.y][(int)state->pos.x] == CELL_LOOK_EAST)
-		state->dir.x = 1.0;
-	state->plane.x = 0.0;
-	state->plane.y = 0.66;
+	helper_init_dir_plane(state, (int)state->pos.y, (int)state->pos.x);
 }
 
 t_state	*state_new_empty(void)
@@ -106,7 +101,7 @@ void	*state_destroy(t_state *state)
 	while (++i < TEXTURES_NUM)
 	{
 		free(state->textures_path[i]);
-		if (state->mlx_ptr != NULL&& state->textures[i].id != NULL)
+		if (state->mlx_ptr != NULL && state->textures[i].id != NULL)
 			mlx_destroy_image(state->mlx_ptr, state->textures[i].id);
 	}
 	if (state->mlx_ptr && state->window_ptr)
