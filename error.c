@@ -9,3 +9,27 @@ void	error_put_usage_exit(char *name)
 	ft_putendl_fd(" [.cub file] [--save]", STDERR_FILENO);
 	exit(EXIT_FAILURE);
 }
+
+void	error_put(char *message)
+{
+	ft_putstr("Error\nCouldnt ");
+	ft_putendl(message);
+}
+
+void	*error_put_return(char *message)
+{
+	error_put(message);
+	return (NULL);
+}
+
+void	*error_put_return_state_destroy(char *message, t_state *state)
+{
+	state_destroy(state);
+	return error_put_return(message);
+}
+
+void	*error_put_return_lines_state_destroy(char *message, t_state *state, char **lines)
+{
+	helper_free_splited(lines);
+	return (error_put_return_state_destroy(message, state));
+}

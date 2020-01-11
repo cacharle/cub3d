@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 16:39:57 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 12:32:13 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 13:10:45 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_state	*state_new(t_state *state)
 	{
 		load_texture(state->mlx_ptr, &state->textures[i], state->textures_path[i]);
 		if (state->textures[i].id == NULL)
-			return (state_destroy(state));
+			return (error_put_return_state_destroy("load texture", state));
 	}
 	if ((state->window.id = mlx_new_image(state->mlx_ptr,
 			state->window.width, state->window.height)) == NULL)

@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 10:59:58 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 12:54:44 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -203,6 +203,10 @@ double		vector_norm(t_vector v);
 */
 
 void		error_put_usage_exit(char *name);
+void		error_put(char *message);
+void		*error_put_return(char *message);
+void		*error_put_return_state_destroy(char *message, t_state *state);
+void		*error_put_return_lines_state_destroy(char *message, t_state *state, char **lines);
 
 /*
 ** helper.c

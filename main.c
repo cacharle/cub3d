@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:39:39 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 12:33:37 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 13:04:38 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,9 @@ int	main(int argc, char **argv)
 int main(int argc, char **argv)
 {
 	(void)argc;
-	t_state *s = parse(argv[1]);
+	t_state *s = parse_check(parse(argv[1]));
 	if (s == NULL)
 		return (1);
-	if (parse_check(s) == NULL)
-	{
-		printf("wrong .cub format");
-		return (1);
-	}
 	printf("R %d %d\n", s->window.width, s->window.height);
 	printf("NO %s\n", s->textures_path[TEX_NORTH]);
 	printf("SO %s\n", s->textures_path[TEX_SOUTH]);

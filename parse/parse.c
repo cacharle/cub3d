@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 09:29:21 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 11:29:45 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/11 12:59:58 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,32 +19,26 @@ t_state	*parse(char *filename)
 	t_state	*state;
 
 	if ((state = state_new_empty()) == NULL)
-		return (NULL);
+		return (error_put_return("create empty state"));
 	if ((lines = get_file_lines(filename)) == NULL)
-		return (state_destroy(state));
-	/* for (int i = 0; lines[i]; i++) */
-	/* 	printf("%d [%s]\n", i, lines[i]); */
+		return (error_put_return_state_destroy("read .cub file", state));
 	i = -1;
 	while (lines[++i] != NULL)
 	{
 		if (*lines[i] == '1')
 			break ;
 		if (!parse_line(state, lines[i]))
-		{
-			helper_free_splited(lines);
-			return (state_destroy(state));
-		}
+			return (error_put_return_lines_state_destroy(
+						"parse configuration", state, lines));
 	}
 	if ((state = parse_map(state, lines + i)) == NULL)
-	{
-		helper_free_splited(lines);
-		return (state_destroy(state));
-	}
+		return (error_put_return_lines_state_destroy(
+					"parse map", state, lines));
 	helper_free_splited(lines);
 	return (state);
 }
 
-char		**get_file_lines(char *filename)
+char	**get_file_lines(char *filename)
 {
 	int		fd;
 	int		ret;
@@ -81,7 +75,7 @@ static t_option_parser	g_option_parsers[] =
 
 #define OPTIONS_PARSERS_SIZE (sizeof(g_option_parsers) / sizeof(t_option_parser))
 
-t_bool		parse_line(t_state *state, char *line)
+t_bool	parse_line(t_state *state, char *line)
 {
 	int i;
 
@@ -115,7 +109,7 @@ t_state	*parse_map(t_state *state, char **lines)
 	return (state);
 }
 
-t_cell		*create_map_row(char *line)
+t_cell	*create_map_row(char *line)
 {
 	int		i;
 	t_cell	*row;
