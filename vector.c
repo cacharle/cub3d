@@ -6,15 +6,11 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 01:28:01 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/12 14:39:34 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/15 15:09:08 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-#define VECTOR_MINUS(v) vector_scale(v, -1.0)
-#define VECTOR_SUB(v, w) vector_add(v, VECTOR_MINUS(w))
-#define VECTOR_ADD_CONST(v, c) vector_add(v, vector_new(c, c))
 
 t_vector	vector_add(t_vector a, t_vector b)
 {
@@ -51,7 +47,7 @@ double		vector_norm(t_vector v)
 t_vector	vector_new(double x, double y)
 {
 	t_vector	v;
-	
+
 	v.x = x;
 	v.y = y;
 	return (v);

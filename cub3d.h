@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/12 15:35:49 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/15 15:10:45 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -20,6 +20,8 @@
 # include <math.h>
 # include "mlx.h"
 # include "libft.h"
+
+# define BUFFER_SIZE 64
 
 # define WINDOW_TITLE "cub3D"
 # define MLXK_ESC 53
@@ -113,6 +115,26 @@ typedef struct	s_state
 	t_image		textures[TEXTURES_NUM];
 }				t_state;
 
+typedef enum
+{
+	SIDE_NS,
+	SIDE_WE
+}	t_side;
+
+typedef struct	s_render_state
+{
+	int			x;
+	t_vector	ray;
+	t_vector	map_pos;
+	t_vector	delta;
+	t_side		side;
+	int			line_height;
+	t_vector	probe;
+	t_vector	map_step;
+	int			draw_start;
+	int			draw_end;
+}				t_render_state;
+
 typedef t_bool	(*t_option_parser_func)(t_state *state, char *line);
 
 typedef struct				s_option_parser
@@ -120,12 +142,6 @@ typedef struct				s_option_parser
 	char					*id;
 	t_option_parser_func	func;
 }							t_option_parser;
-
-typedef enum
-{
-	SIDE_NS,
-	SIDE_WE
-}	t_side;
 
 /*
 ** parse/parse.c
@@ -189,15 +205,22 @@ void		load_texture(void *mlx_ptr, t_image *image, char *path);
 int			render_update(void *param);
 void		render_update_window(t_state *state);
 void		render_column(t_state *state, int x);
+void		render_window_column(t_state *state, t_render_state *rstate);
 
 /*
 ** vector.c
 */
 
+# define VECTOR_MINUS(v) vector_scale(v, -1.0)
+# define VECTOR_SUB(v, w) vector_add(v, VECTOR_MINUS(w))
+# define VECTOR_ADD_CONST(v, c) vector_add(v, vector_new(c, c))
+
 t_vector	vector_add(t_vector a, t_vector b);
 t_vector	vector_scale(t_vector v, double scalar);
 t_vector	vector_rotate(t_vector v, double angle);
 double		vector_norm(t_vector v);
+t_vector	vector_new(double x, double y);
+t_vector	vector_apply(t_vector v, double (*f)(double));
 
 /*
 ** error.c
@@ -217,6 +240,21 @@ void		*error_put_return_lines_state_destroy(
 t_bool		helper_is_player_cell(t_cell cell);
 void		helper_free_splited(char **splited);
 void		helper_rotate_player(t_state *state, double rotation);
+void		helper_init_dir_plane(t_state *state, int y, int x);
+// int			get_tex_x()
+
+/*
+** render_state.c
+*/
+
+void		rstate_ray(t_state *state, t_render_state *rstate);
+void		rstate_delta(t_render_state *rstate);
+void		rstate_init_probe(t_state *state, t_render_state *rstate);
+double		rstate_perp_dist(t_state *state, t_render_state *rstate);
+void		rstate_line_height(t_state *state, t_render_state *rstate);
+void		rstate_next_probe(t_render_state *rstate);
+t_image		*get_tex(t_state *state, t_render_state *rstate);
+
 
 /*
 ** capture.c

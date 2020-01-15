@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 13:15:11 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 13:32:54 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/15 15:08:34 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,4 @@ int		capture(t_state *state)
 
 void	write_bmp(t_image *image)
 {
-
 }

@@ -18,6 +18,7 @@ SRC = main.c \
 	  state.c \
 	  vector.c \
 	  render.c \
+	  render_state.c \
 	  helper.c \
 	  error.c \
 	  capture.c

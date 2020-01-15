@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 16:39:57 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/12 10:37:38 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/15 15:13:06 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ t_state	*state_new(t_state *state)
 	/* printf("%x\n", state->floor_color.rgb.g); */
 	/* printf("%x\n", state->floor_color.rgb.b); */
 	/* printf("endian %d", state->window.endian); */
-			/* return NULL; */
 	return (state);
 }
 
