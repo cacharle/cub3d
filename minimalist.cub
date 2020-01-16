@@ -1,4 +1,4 @@
-R 640 480
+R 400 400
 NO ./textures/brick.xpm
 SO ./textures/brick.xpm
 WE ./textures/brick.xpm

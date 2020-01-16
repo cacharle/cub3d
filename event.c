@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:39:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/12 09:27:14 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/16 07:52:01 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	event_keydown(int key, void *param)
 {
 	t_state	*state;
 
+	printf("event: %d\n", key);
 	state = (t_state*)param;
 	if (key == MLXK_ESC)
 		state->running = FALSE;

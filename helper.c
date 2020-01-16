@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 07:32:20 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/15 14:40:49 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/16 08:57:01 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,19 @@ void	helper_rotate_player(t_state *state, double rotation)
 	state->plane = vector_rotate(state->plane, rotation);
 }
 
+/*
+** Initial player direction vector
+** Since the map [0 0] is in the top left corner the north/south direction are slipped.
+** The camera plane has to stay perpendicular to the direction and
+** create a camera with a 66 degree angle (which is a recommended angle for fps)
+*/
+
 void	helper_init_dir_plane(t_state *state, int y, int x)
 {
 	if (state->map[y][x] == CELL_LOOK_NORTH)
-		state->dir.y = 1.0;
-	else if (state->map[y][x] == CELL_LOOK_SOUTH)
 		state->dir.y = -1.0;
+	else if (state->map[y][x] == CELL_LOOK_SOUTH)
+		state->dir.y = 1.0;
 	else if (state->map[y][x] == CELL_LOOK_WEST)
 		state->dir.x = -1.0;
 	else if (state->map[y][x] == CELL_LOOK_EAST)

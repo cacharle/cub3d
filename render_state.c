@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/15 14:40:14 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/15 15:06:39 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/16 10:03:01 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,27 +65,48 @@ void	rstate_delta(t_render_state *rstate)
 ** we multiply them by their corresponding delta.
 ** 0 <= perpendicular distance <= 1 is a ratio, how much of the full delta we need to take.
 **
-** if (ray.x < 0)
-**     current.x = state->pos.x - map_pos.x;
+** if (rstate->ray.x < 0)
+**     rstate->probe.x = state->pos.x - rstate->map_pos.x;
 ** else
-**     current.x = fabs(state->pos.x - map_pos.x + 1.0);
-** if (ray.y < 0)
-**     current.y = state->pos.y - map_pos.y;
+**     rstate->probe.x = fabs(state->pos.x - rstate->map_pos.x + 1.0);
+** if (rstate->ray.y < 0)
+**     rstate->probe.y = state->pos.y - rstate->map_pos.y;
 ** else
-**     current.y = fabs(state->pos.y - map_pos.y + 1.0);
-** current.x *= delta.x;
-** current.y *= delta.y;
+**     rstate->probe.y = fabs(state->pos.y - rstate->map_pos.y + 1.0);
+** rstate->probe.x *= rstate->delta.x;
+** rstate->probe.y *= rstate->delta.y;
 */
 
 void	rstate_init_probe(t_state *state, t_render_state *rstate)
 {
-	rstate->probe = vector_apply(VECTOR_SUB(state->pos, rstate->map_pos), &fabs);
+	rstate->probe = VECTOR_SUB(state->pos, rstate->map_pos);
 	if (rstate->ray.x > 0)
 		rstate->probe.x += 1.0;
 	if (rstate->ray.y > 0)
 		rstate->probe.y += 1.0;
 	rstate->probe.x *= rstate->delta.x;
 	rstate->probe.y *= rstate->delta.y;
+}
+
+/*
+** Move the probe to it's next iteration by advancing to the nearest square unit
+** in the x or y direction.
+** This advance is represented both with the
+** player/ray percpective and the map pecpective.
+*/
+
+void	rstate_next_probe(t_render_state *rstate)
+{
+	if (rstate->probe.x < rstate->probe.y)
+	{
+		rstate->probe.x += rstate->delta.x;
+		rstate->map_pos.x += rstate->map_step.x;
+	}
+	else
+	{
+		rstate->probe.y += rstate->delta.y;
+		rstate->map_pos.y += rstate->map_step.y;
+	}
 }
 
 /*
@@ -116,10 +137,12 @@ void	rstate_init_probe(t_state *state, t_render_state *rstate)
 double	rstate_perp_dist(t_state *state, t_render_state *rstate)
 {
 	if (rstate->side == SIDE_NS)
-		return (rstate->probe.y - state->pos.y + state->dir.y);
-	else if (rstate->side == SIDE_NS)
-		return (rstate->probe.x - state->pos.x + state->dir.x);
-	return (0.0);
+		return ((rstate->map_pos.x - state->pos.x + (1.0 - rstate->map_step.x) / 2.0) / rstate->ray.x); // fait des trucs bizzare
+		/* return (rstate->map_pos.y - state->pos.y + state->dir.y); */
+	else if (rstate->side == SIDE_WE)
+		return ((rstate->map_pos.y - state->pos.y + (1.0 - rstate->map_step.y) / 2.0) / rstate->ray.y);
+		/* return (rstate->map_pos.x - state->pos.x + state->dir.x); */
+	return (1.0);
 }
 
 /*
@@ -131,20 +154,6 @@ void	rstate_line_height(t_state *state, t_render_state *rstate)
 {
 	rstate->line_height =
 		(int)((double)state->window.height / rstate_perp_dist(state, rstate));
-}
-
-void	rstate_next_probe(t_render_state *rstate)
-{
-	if (rstate->probe.x < rstate->probe.y)
-	{
-		rstate->probe.x += rstate->delta.x;
-		rstate->map_pos.x += rstate->map_step.x;
-	}
-	else
-	{
-		rstate->probe.y += rstate->delta.y;
-		rstate->map_pos.y += rstate->map_step.y;
-	}
 }
 
 t_image	*get_tex(t_state *state, t_render_state *rstate)

@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 01:28:01 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/15 15:09:08 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/16 08:43:09 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ t_vector	vector_rotate(t_vector v, double angle)
 
 double		vector_norm(t_vector v)
 {
-	return (sqrt(SQUARE(v.x) + SQUARE(v.y)));
+	/* return (sqrt(SQUARE(v.x) + SQUARE(v.y))); */
+	return (hypot(v.x, v.y));
 }
 
 t_vector	vector_new(double x, double y)

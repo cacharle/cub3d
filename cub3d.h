@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/15 15:10:45 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/16 08:08:16 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -254,7 +254,6 @@ double		rstate_perp_dist(t_state *state, t_render_state *rstate);
 void		rstate_line_height(t_state *state, t_render_state *rstate);
 void		rstate_next_probe(t_render_state *rstate);
 t_image		*get_tex(t_state *state, t_render_state *rstate);
-
 
 /*
 ** capture.c
