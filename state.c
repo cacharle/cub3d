@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 16:39:57 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/15 15:13:06 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/17 14:05:08 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,25 +26,24 @@ t_state	*state_new(t_state *state)
 	if ((state->window_ptr = mlx_new_window(state->mlx_ptr,
 			state->window.width, state->window.height, WINDOW_TITLE)) == NULL)
 		return (state_destroy(state));
-	i = -1;
-	while (++i < TEXTURES_NUM)
-	{
-		load_texture(state->mlx_ptr, &state->textures[i],
-				state->textures_path[i]);
-		if (state->textures[i].id == NULL)
-			return (error_put_return_state_destroy("load texture", state));
-	}
+	printf("init mlx and mlx window\n");
+	/* i = -1; */
+	/* while (++i < TEXTURES_NUM) */
+	/* { */
+	/* 	load_texture(state->mlx_ptr, &state->textures[i], */
+	/* 			state->textures_path[i]); */
+	/* 	if (state->textures[i].id == NULL) */
+	/* 		return (error_put_return_state_destroy("load texture", state)); */
+	/* } */
 	if ((state->window.id = mlx_new_image(state->mlx_ptr,
 			state->window.width, state->window.height)) == NULL)
 		return (state_destroy(state));
 	state->window.data = mlx_get_data_addr(state->window.id,
 			&state->window.depth, &state->window.size_line,
 			&state->window.endian);
+	printf("init mlx window image\n");
 	state_init_player(state);
-	/* printf("%x\n", state->floor_color.rgb.r); */
-	/* printf("%x\n", state->floor_color.rgb.g); */
-	/* printf("%x\n", state->floor_color.rgb.b); */
-	/* printf("endian %d", state->window.endian); */
+	printf("init player\n");
 	return (state);
 }
 
@@ -96,19 +95,25 @@ void	*state_destroy(t_state *state)
 
 	if (state == NULL)
 		return (NULL);
-	i = -1;
-	while (++i < TEXTURES_NUM)
-	{
-		free(state->textures_path[i]);
-		if (state->mlx_ptr != NULL && state->textures[i].id != NULL)
-			mlx_destroy_image(state->mlx_ptr, state->textures[i].id);
-	}
+	/* i = -1; */
+	/* while (++i < TEXTURES_NUM) */
+	/* { */
+	/* 	free(state->textures_path[i]); */
+	/* 	if (state->mlx_ptr != NULL && state->textures[i].id != NULL) */
+	/* 		mlx_destroy_image(state->mlx_ptr, state->textures[i].id); */
+	/* } */
+	printf("free window image\n");
+	if (state->mlx_ptr != NULL && state->window.id != NULL)
+		mlx_destroy_image(state->mlx_ptr, state->window.id);
+	printf("free window\n");
 	if (state->mlx_ptr && state->window_ptr)
 		mlx_destroy_window(state->mlx_ptr, state->window_ptr);
+	printf("free map\n");
 	if (state->map != NULL)
 		while (state->map_height-- > 0 && state->map[state->map_height] != NULL)
 			free(state->map[state->map_height]);
 	free(state->map);
+	printf("free state\n");
 	free(state);
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/15 14:40:14 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/16 10:03:01 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/17 14:48:15 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	rstate_ray(t_state *state, t_render_state *rstate)
 {
 	double camera_x;
 
-	camera_x = 2 * rstate->x / (double)state->window.width - 1;
+	camera_x = 2.0 * (double)rstate->x / (double)state->window.width - 1.0;
 	rstate->ray = vector_add(state->dir, vector_scale(state->plane, camera_x));
 }
 
@@ -136,13 +136,29 @@ void	rstate_next_probe(t_render_state *rstate)
 
 double	rstate_perp_dist(t_state *state, t_render_state *rstate)
 {
+	double dist;
+
+	/* printf("ray [%f %f]\n", rstate->ray.x, rstate->ray.y); */
+	dist = 1.0;
 	if (rstate->side == SIDE_NS)
-		return ((rstate->map_pos.x - state->pos.x + (1.0 - rstate->map_step.x) / 2.0) / rstate->ray.x); // fait des trucs bizzare
-		/* return (rstate->map_pos.y - state->pos.y + state->dir.y); */
+	{
+		dist = rstate->map_pos.y - state->pos.y;
+		dist += rstate->map_step.y == 1 ? 1 : 0;
+		dist /= rstate->ray.y;
+	}
 	else if (rstate->side == SIDE_WE)
-		return ((rstate->map_pos.y - state->pos.y + (1.0 - rstate->map_step.y) / 2.0) / rstate->ray.y);
-		/* return (rstate->map_pos.x - state->pos.x + state->dir.x); */
-	return (1.0);
+	{
+		dist = rstate->map_pos.x - state->pos.x;
+		dist += rstate->map_step.x == 1 ? 1 : 0;
+		dist /= rstate->ray.x;
+	}
+	return dist;
+
+	/* if (rstate->side == SIDE_NS) */
+	/* 	return fabs(rstate->map_pos.y - state->pos.y + state->dir.y); */
+	/* else if (rstate->side == SIDE_WE) */
+	/* 	return fabs(rstate->map_pos.x - state->pos.x + state->dir.x); */
+	/* return (1.0); */
 }
 
 /*
@@ -152,8 +168,9 @@ double	rstate_perp_dist(t_state *state, t_render_state *rstate)
 
 void	rstate_line_height(t_state *state, t_render_state *rstate)
 {
-	rstate->line_height =
-		(int)((double)state->window.height / rstate_perp_dist(state, rstate));
+	/* double perp = rstate_perp_dist(state, rstate); */
+	/* printf("perp %f\n", perp); */
+	rstate->line_height = (int)((double)state->window.height / rstate_perp_dist(state, rstate));
 }
 
 t_image	*get_tex(t_state *state, t_render_state *rstate)

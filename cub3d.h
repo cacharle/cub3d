@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/16 08:08:16 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/17 14:00:00 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -186,7 +186,8 @@ t_bool		parse_ceilling_color(t_state *state, char *line);
 ** event.c
 */
 
-int			event_keydown(int key, void *param);
+int			event_keydown(int key, t_state *state);
+int			event_quit(t_state *state);
 
 /*
 ** state.c
