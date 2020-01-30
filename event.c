@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:39:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/17 13:59:48 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 14:18:13 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ int	event_keydown(int key, t_state *state)
 	return (0);
 }
 
-int event_quit(t_state *state)
+int	event_quit(t_state *state)
 {
 	state->running = FALSE;
+	return (0);
 }

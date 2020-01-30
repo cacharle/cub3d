@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 13:37:17 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/30 13:38:35 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 14:16:36 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int		render_update(void *param)
 		exit(EXIT_SUCCESS);
 		return (0);
 	}
-	ft_bzero(state->window.data, state->window.width * state->window.height * 4);
 	render_update_window(state);
 	mlx_put_image_to_window(state->mlx_ptr, state->window_ptr, state->window.id, 0, 0);
 	return (0);
@@ -69,16 +68,14 @@ void	render_window_column(t_state *state, t_render_state *rstate)
 {
 	int		i;
 	t_color	white;
-	t_color black;
 
 	white.hexcode = 0x00ffffff;
-	black.hexcode = 0x00000000;
 	i = 0;
 	while (i < rstate->draw_start)
 		((t_color*)state->window.data)[i++ * state->window.width + rstate->x] = state->ceilling_color;
 	while (i < rstate->draw_end)
 		((t_color*)state->window.data)[i++ * state->window.width + rstate->x] = white;
-	while (i < state->window_height)
+	while (i < state->window.height)
 		((t_color*)state->window.data)[i++ * state->window.width + rstate->x] = state->floor_color;
 
 	/* while (++i < rstate->draw_start) */

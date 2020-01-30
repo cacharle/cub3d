@@ -5,8 +5,8 @@ WE ./textures/brick.xpm
 EA ./textures/brick.xpm
 
 S ./textures/brick.xpm
-F 220,0,0
-C 0,225,0
+F 0,225,0
+C 200,200,0
 
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 1 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1

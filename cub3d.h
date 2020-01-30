@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/30 12:04:26 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 14:17:19 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -53,10 +53,10 @@ typedef union
 	unsigned int	hexcode;
 	struct
 	{
-		t_byte		empty;
-		t_byte		r;
-		t_byte		g;
 		t_byte		b;
+		t_byte		g;
+		t_byte		r;
+		t_byte		empty;
 	}				rgb;
 }					t_color;
 
@@ -100,8 +100,6 @@ typedef struct	s_state
 	t_bool		running;
 	void		*mlx_ptr;
 	void		*window_ptr;
-	int			window_width;
-	int			window_height;
 	t_vector	pos;
 	t_vector	dir;
 	t_vector	plane;
