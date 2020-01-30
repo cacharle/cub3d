@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/15 14:40:14 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/17 14:48:15 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 13:36:35 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ void	rstate_ray(t_state *state, t_render_state *rstate)
 
 void	rstate_delta(t_render_state *rstate)
 {
-	rstate->delta.x = vector_norm(rstate->ray) / rstate->ray.x;
-	rstate->delta.y = vector_norm(rstate->ray) / rstate->ray.y;
+	rstate->delta.x = fabs(1 / rstate->ray.x); //vector_norm(rstate->ray) / rstate->ray.x;
+	rstate->delta.y = fabs(1 / rstate->ray.y); // vector_norm(rstate->ray) / rstate->ray.y;
 }
 
 /*
@@ -79,13 +79,21 @@ void	rstate_delta(t_render_state *rstate)
 
 void	rstate_init_probe(t_state *state, t_render_state *rstate)
 {
-	rstate->probe = VECTOR_SUB(state->pos, rstate->map_pos);
-	if (rstate->ray.x > 0)
-		rstate->probe.x += 1.0;
-	if (rstate->ray.y > 0)
-		rstate->probe.y += 1.0;
-	rstate->probe.x *= rstate->delta.x;
-	rstate->probe.y *= rstate->delta.y;
+	if (rstate->ray.x < 0)
+		rstate->probe.x = (state->pos.x - rstate->map_pos.x) * rstate->delta.x;
+	else
+		rstate->probe.x = (rstate->map_pos.x + 1.0 - state->pos.x) * rstate->delta.x;
+	if (rstate->ray.y < 0)
+		rstate->probe.y = (state->pos.y - rstate->map_pos.y) * rstate->delta.y;
+	else
+		rstate->probe.y = (rstate->map_pos.y + 1.0 - state->pos.y) * rstate->delta.y;
+	/* rstate->probe = VECTOR_SUB(state->pos, rstate->map_pos); */
+	/* if (rstate->ray.x > 0) */
+	/* 	rstate->probe.x += 1.0; */
+	/* if (rstate->ray.y > 0) */
+	/* 	rstate->probe.y += 1.0; */
+	/* rstate->probe.x *= rstate->delta.x; */
+	/* rstate->probe.y *= rstate->delta.y; */
 }
 
 /*
@@ -136,29 +144,11 @@ void	rstate_next_probe(t_render_state *rstate)
 
 double	rstate_perp_dist(t_state *state, t_render_state *rstate)
 {
-	double dist;
-
-	/* printf("ray [%f %f]\n", rstate->ray.x, rstate->ray.y); */
-	dist = 1.0;
-	if (rstate->side == SIDE_NS)
-	{
-		dist = rstate->map_pos.y - state->pos.y;
-		dist += rstate->map_step.y == 1 ? 1 : 0;
-		dist /= rstate->ray.y;
-	}
-	else if (rstate->side == SIDE_WE)
-	{
-		dist = rstate->map_pos.x - state->pos.x;
-		dist += rstate->map_step.x == 1 ? 1 : 0;
-		dist /= rstate->ray.x;
-	}
-	return dist;
-
-	/* if (rstate->side == SIDE_NS) */
-	/* 	return fabs(rstate->map_pos.y - state->pos.y + state->dir.y); */
-	/* else if (rstate->side == SIDE_WE) */
-	/* 	return fabs(rstate->map_pos.x - state->pos.x + state->dir.x); */
-	/* return (1.0); */
+	if (rstate->side == SIDE_WE)
+		return (rstate->map_pos.x - state->pos.x + (1 - rstate->map_step.x) / 2) / rstate->ray.x;
+	else
+		return (rstate->map_pos.y - state->pos.y + (1 - rstate->map_step.y) / 2) / rstate->ray.y;
+	return (1.0);
 }
 
 /*
@@ -168,29 +158,27 @@ double	rstate_perp_dist(t_state *state, t_render_state *rstate)
 
 void	rstate_line_height(t_state *state, t_render_state *rstate)
 {
-	/* double perp = rstate_perp_dist(state, rstate); */
-	/* printf("perp %f\n", perp); */
 	rstate->line_height = (int)((double)state->window.height / rstate_perp_dist(state, rstate));
 }
 
-t_image	*get_tex(t_state *state, t_render_state *rstate)
-{
-	if (rstate->side == SIDE_NS)
-	{
-		if (rstate->probe.y < state->pos.y)
-			return (state->textures + TEX_NORTH);
-		else
-			return (state->textures + TEX_SOUTH);
-	}
-	else if (rstate->side == SIDE_WE)
-	{
-		if (rstate->probe.x < state->pos.x)
-			return (state->textures + TEX_WEST);
-		else
-			return (state->textures + TEX_EAST);
-	}
-	return (NULL);
-}
+/* t_image	*get_tex(t_state *state, t_render_state *rstate) */
+/* { */
+/* 	if (rstate->side == SIDE_NS) */
+/* 	{ */
+/* 		if (rstate->probe.y < state->pos.y) */
+/* 			return (state->textures + TEX_NORTH); */
+/* 		else */
+/* 			return (state->textures + TEX_SOUTH); */
+/* 	} */
+/* 	else if (rstate->side == SIDE_WE) */
+/* 	{ */
+/* 		if (rstate->probe.x < state->pos.x) */
+/* 			return (state->textures + TEX_WEST); */
+/* 		else */
+/* 			return (state->textures + TEX_EAST); */
+/* 	} */
+/* 	return (NULL); */
+/* } */
 
 /*
 ** Since we're drawing each column, all the texels we want to draw on the window

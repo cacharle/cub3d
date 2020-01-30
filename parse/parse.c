@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 09:29:21 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 12:59:58 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 12:03:54 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,14 @@ char	**get_file_lines(char *filename)
 {
 	int		fd;
 	int		ret;
-	char	buf[BUFFER_SIZE + 1];
+	char	buf[CUB3D_BUFFER_SIZE + 1];
 	char	*file;
 
 	if ((fd = open(filename, O_RDONLY)) < 0)
 		return (NULL);
 	if ((file = ft_strdup("")) == NULL)
 		return (NULL);
-	while ((ret = read(fd, buf, BUFFER_SIZE)) > 0)
+	while ((ret = read(fd, buf, CUB3D_BUFFER_SIZE)) > 0)
 	{
 		buf[ret] = '\0';
 		if ((file = ft_strjoin(file, buf)) == NULL)

@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/17 14:00:00 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 12:04:26 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -21,7 +21,7 @@
 # include "mlx.h"
 # include "libft.h"
 
-# define BUFFER_SIZE 64
+# define CUB3D_BUFFER_SIZE 64
 
 # define WINDOW_TITLE "cub3D"
 # define MLXK_ESC 53
