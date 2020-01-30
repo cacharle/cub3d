@@ -6,13 +6,13 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:39:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/30 14:18:13 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 15:20:18 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-#define ROTATE_STEP (M_PI / 20.0)
+#define ROTATE_STEP (M_PI / 40.0)
 #define MOVE_SPEED 0.25
 
 int	event_keydown(int key, t_state *state)
@@ -21,10 +21,10 @@ int	event_keydown(int key, t_state *state)
 		state->running = FALSE;
 	else if (key == MLXK_A)
 		state->pos = vector_add(state->pos,
-				vector_scale(vector_rotate(state->dir, M_PI_2), MOVE_SPEED));
+				vector_scale(vector_rotate(state->dir, -M_PI_2), MOVE_SPEED));
 	else if (key == MLXK_D)
 		state->pos = vector_add(state->pos,
-				vector_scale(vector_rotate(state->dir, -M_PI_2), MOVE_SPEED));
+				vector_scale(vector_rotate(state->dir, M_PI_2), MOVE_SPEED));
 	else if (key == MLXK_W)
 		state->pos = vector_add(state->pos,
 				vector_scale(state->dir, MOVE_SPEED));

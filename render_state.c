@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/15 14:40:14 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/30 13:36:35 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 15:14:39 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,13 +142,12 @@ void	rstate_next_probe(t_render_state *rstate)
 ** if we had hit it form west/east, we would use the x component instead.
 */
 
-double	rstate_perp_dist(t_state *state, t_render_state *rstate)
+void	rstate_perp_dist(t_state *state, t_render_state *rstate)
 {
 	if (rstate->side == SIDE_WE)
-		return (rstate->map_pos.x - state->pos.x + (1 - rstate->map_step.x) / 2) / rstate->ray.x;
+		rstate->perp_dist = (rstate->map_pos.x - state->pos.x + (1 - rstate->map_step.x) / 2) / rstate->ray.x;
 	else
-		return (rstate->map_pos.y - state->pos.y + (1 - rstate->map_step.y) / 2) / rstate->ray.y;
-	return (1.0);
+		rstate->perp_dist = (rstate->map_pos.y - state->pos.y + (1 - rstate->map_step.y) / 2) / rstate->ray.y;
 }
 
 /*
@@ -158,27 +157,27 @@ double	rstate_perp_dist(t_state *state, t_render_state *rstate)
 
 void	rstate_line_height(t_state *state, t_render_state *rstate)
 {
-	rstate->line_height = (int)((double)state->window.height / rstate_perp_dist(state, rstate));
+	rstate->line_height = (int)((double)state->window.height / rstate->perp_dist);
 }
 
-/* t_image	*get_tex(t_state *state, t_render_state *rstate) */
-/* { */
-/* 	if (rstate->side == SIDE_NS) */
-/* 	{ */
-/* 		if (rstate->probe.y < state->pos.y) */
-/* 			return (state->textures + TEX_NORTH); */
-/* 		else */
-/* 			return (state->textures + TEX_SOUTH); */
-/* 	} */
-/* 	else if (rstate->side == SIDE_WE) */
-/* 	{ */
-/* 		if (rstate->probe.x < state->pos.x) */
-/* 			return (state->textures + TEX_WEST); */
-/* 		else */
-/* 			return (state->textures + TEX_EAST); */
-/* 	} */
-/* 	return (NULL); */
-/* } */
+t_image	*get_tex(t_state *state, t_render_state *rstate)
+{
+	if (rstate->side == SIDE_NS)
+	{
+		if (rstate->probe.y < state->pos.y)
+			return (state->textures + TEX_NORTH);
+		else
+			return (state->textures + TEX_SOUTH);
+	}
+	else if (rstate->side == SIDE_WE)
+	{
+		if (rstate->probe.x < state->pos.x)
+			return (state->textures + TEX_WEST);
+		else
+			return (state->textures + TEX_EAST);
+	}
+	return (NULL);
+}
 
 /*
 ** Since we're drawing each column, all the texels we want to draw on the window
@@ -186,16 +185,21 @@ void	rstate_line_height(t_state *state, t_render_state *rstate)
 ** First we find the x-coord relative to the wall we hit
 */
 
-/* int			get_tex_x() */
-/* { */
-/* 	//calculate value of wall_x */
-/* 	double wall_x; //where exactly the wall was hit */
-/* 	if (side == 0) wall_x = state->pos.y + perp_dist * ray.y; */
-/* 	else           wall_x = state->pos.x + perp_dist * ray.x; */
-/* 	wall_x -= floor(wall_x); */
-/* 	//x coordinate on the texture */
-/* 	int tex_x = (int)(wall_x * (double)texWidth); */
-/* 	if(side == 0 && ray.x > 0) tex_x = texture_width - tex_x - 1; */
-/* 	if(side == 1 && ray.y < 0) tex_x = texture_width - tex_x - 1; */
-/* 	return (tex_x); */
-/* } */
+int			get_tex_x(t_state *state, t_render_state *rstate, t_image *texture)
+{
+	int		tex_x;
+	double	wall_x;
+
+	if (rstate->side == SIDE_WE)
+		wall_x = state->pos.y + rstate->perp_dist * rstate->ray.y;
+	else
+		wall_x = state->pos.x + rstate->perp_dist * rstate->ray.x;
+	wall_x -= floor(wall_x);
+
+	tex_x = (int)(wall_x * (double)texture->width);
+	if (rstate->side == 0 && rstate->ray.x > 0)
+		tex_x = texture->width - tex_x - 1;
+	if (rstate->side == 1 && rstate->ray.y < 0)
+		tex_x = texture->width - tex_x - 1;
+	return (tex_x);
+}

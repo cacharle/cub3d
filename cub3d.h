@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/30 14:17:19 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 15:05:20 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -126,6 +126,7 @@ typedef struct	s_render_state
 	t_vector	map_pos;
 	t_vector	delta;
 	t_side		side;
+	double		perp_dist;
 	int			line_height;
 	t_vector	probe;
 	t_vector	map_step;
@@ -205,6 +206,7 @@ int			render_update(void *param);
 void		render_update_window(t_state *state);
 void		render_column(t_state *state, int x);
 void		render_window_column(t_state *state, t_render_state *rstate);
+void		render_texture(t_state *state, t_render_state *rstate);
 
 /*
 ** vector.c
@@ -249,10 +251,11 @@ void		helper_init_dir_plane(t_state *state, int y, int x);
 void		rstate_ray(t_state *state, t_render_state *rstate);
 void		rstate_delta(t_render_state *rstate);
 void		rstate_init_probe(t_state *state, t_render_state *rstate);
-double		rstate_perp_dist(t_state *state, t_render_state *rstate);
+void		rstate_perp_dist(t_state *state, t_render_state *rstate);
 void		rstate_line_height(t_state *state, t_render_state *rstate);
 void		rstate_next_probe(t_render_state *rstate);
 t_image		*get_tex(t_state *state, t_render_state *rstate);
+int			get_tex_x(t_state *state, t_render_state *rstate, t_image *texture);
 
 /*
 ** capture.c

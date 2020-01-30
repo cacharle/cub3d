@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 13:37:17 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/30 14:16:36 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 15:17:49 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	render_column(t_state *state, int x)
 		if (state->map[(int)rstate.map_pos.y][(int)rstate.map_pos.x] == CELL_WALL)
 			break ;
 	}
+	rstate_perp_dist(state, &rstate);
 	rstate_line_height(state, &rstate);
 	rstate.draw_start = state->window.height / 2 - rstate.line_height / 2;
 	rstate.draw_end = state->window.height / 2 + rstate.line_height / 2;
@@ -75,41 +76,32 @@ void	render_window_column(t_state *state, t_render_state *rstate)
 		((t_color*)state->window.data)[i++ * state->window.width + rstate->x] = state->ceilling_color;
 	while (i < rstate->draw_end)
 		((t_color*)state->window.data)[i++ * state->window.width + rstate->x] = white;
+	render_texture(state, rstate);
+	i = rstate->draw_end;
 	while (i < state->window.height)
 		((t_color*)state->window.data)[i++ * state->window.width + rstate->x] = state->floor_color;
 
-	/* while (++i < rstate->draw_start) */
-	/* 	((t_color*)state->window.data)[i * state->window.width + rstate->x] = */
-	/* 		state->ceilling_color; */
-	/* i = rstate->draw_end; */
-	/* i = render_texture(state, rstate); */
-	/* while (++i < state->window_height) */
-	/* 	((t_color*)state->window.data)[i * state->window.width + rstate->x] = */
-	/* 		state->floor_color; */
 }
 
-/* int		render_texture(t_state *state, t_render_state *rstate)) */
-/* { */
-	/* int i; */
-	/* int tex_x; */
-	/* double step; */
-	/* double tex_pos; */
-	/* int tex_y; */
-	/* t_image *texture; */
-    /*  */
-	/* texture = get_tex(state, side); */
-	/* tex_x = get_tex_x(); */
-    /*  */
-	/* step = 1.0 * texture->height / line_height; */
-	/* texPos = (start - state->window.height / 2 + line_height / 2) * step; */
-    /*  */
-	/* i = start - 1; */
-	/* while (++i < end) */
-	/* { */
-	/* 	tex_y = (int)tex_pos & (texture->height - 1); */
-	/* 	tex_pos += step; */
-	/* 	((t_color*)state->window.data)[i * state->window.width + x] = */
-	/* 		texture[texHeight * texY + texX]; */
-	/* } */
-	/* return (end); */
-/* } */
+void	render_texture(t_state *state, t_render_state *rstate)
+{
+	int 	i;
+	double	step;
+	double	tex_pos;
+	int		tex_y;
+	int		tex_x;
+	t_image	*texture;
+
+	texture = get_tex(state, rstate);
+	tex_x = get_tex_x(state, rstate, texture);
+	step = 1.0 * texture->height / rstate->line_height;
+	tex_pos = (rstate->draw_start - state->window.height / 2 + rstate->line_height / 2) * step;
+	i = rstate->draw_start - 1;
+	while (++i < rstate->draw_end)
+	{
+		tex_y = (int)tex_pos & (texture->height - 1);
+		tex_pos += step;
+		((t_color*)state->window.data)[i * state->window.width + rstate->x] =
+			((t_color*)texture->data)[texture->height * tex_y + tex_x];
+	}
+}

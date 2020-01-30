@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 16:39:57 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/17 14:05:08 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 15:13:42 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ t_state	*state_new(t_state *state)
 			state->window.width, state->window.height, WINDOW_TITLE)) == NULL)
 		return (state_destroy(state));
 	printf("init mlx and mlx window\n");
-	/* i = -1; */
-	/* while (++i < TEXTURES_NUM) */
-	/* { */
-	/* 	load_texture(state->mlx_ptr, &state->textures[i], */
-	/* 			state->textures_path[i]); */
-	/* 	if (state->textures[i].id == NULL) */
-	/* 		return (error_put_return_state_destroy("load texture", state)); */
-	/* } */
+	i = -1;
+	while (++i < TEXTURES_NUM)
+	{
+		load_texture(state->mlx_ptr, &state->textures[i],
+				state->textures_path[i]);
+		if (state->textures[i].id == NULL)
+			return (error_put_return_state_destroy("load texture", state));
+	}
 	if ((state->window.id = mlx_new_image(state->mlx_ptr,
 			state->window.width, state->window.height)) == NULL)
 		return (state_destroy(state));
@@ -95,13 +95,13 @@ void	*state_destroy(t_state *state)
 
 	if (state == NULL)
 		return (NULL);
-	/* i = -1; */
-	/* while (++i < TEXTURES_NUM) */
-	/* { */
-	/* 	free(state->textures_path[i]); */
-	/* 	if (state->mlx_ptr != NULL && state->textures[i].id != NULL) */
-	/* 		mlx_destroy_image(state->mlx_ptr, state->textures[i].id); */
-	/* } */
+	i = -1;
+	while (++i < TEXTURES_NUM)
+	{
+		free(state->textures_path[i]);
+		if (state->mlx_ptr != NULL && state->textures[i].id != NULL)
+			mlx_destroy_image(state->mlx_ptr, state->textures[i].id);
+	}
 	printf("free window image\n");
 	if (state->mlx_ptr != NULL && state->window.id != NULL)
 		mlx_destroy_image(state->mlx_ptr, state->window.id);
