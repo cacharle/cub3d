@@ -1,36 +1,48 @@
 LIBFT_PATH = ./libft
 MINILIBX_PATH = ./miniLibX
 
+SRCDIR = src
+INCLUDEDIR = include
+OBJDIR = obj
+
 CC = gcc
-CCFLAGS = -I$(LIBFT_PATH) -I$(MINILIBX_PATH) -I. -Wall -Wextra -g #-Werror
+CCFLAGS = -I$(LIBFT_PATH) -I$(MINILIBX_PATH) -I$(INCLUDEDIR) \
+		  -Wall -Wextra #-Werror
 LDFLAGS = -L$(LIBFT_PATH) -lft \
 		  -L$(MINILIBX_PATH) -lmlx \
 		  -framework OpenGL -framework AppKit -lm
 
 NAME = cub3D
-SRC = main.c \
-	  parse/parse.c \
-	  parse/parse_textures.c \
-	  parse/parse_color.c \
-	  parse/parse_resolution.c \
-	  parse/parse_check.c \
-	  event.c \
-	  state.c \
-	  vector.c \
-	  render.c \
-	  render_state.c \
-	  helper.c \
-	  error.c \
-	  capture.c
-OBJ = $(SRC:.c=.o)
-INCLUDE = cub3d.h
+SRCFILES = main.c \
+		   parse/parse.c \
+		   parse/parse_textures.c \
+		   parse/parse_color.c \
+		   parse/parse_resolution.c \
+		   parse/parse_check.c \
+		   event.c \
+		   state.c \
+		   vector.c \
+		   render.c \
+		   render_state.c \
+		   helper.c \
+		   error.c \
+		   capture.c
+SRC = $(addprefix $(SRCDIR)/,$(SRCFILES))
+$(info $(SRC))
+OBJ = $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+$(info $(OBJ))
+INCLUDE = $(addprefix $(INCLUDEDIR), cub3d.h)
 
-all: libft_all minilibx_all $(NAME)
+all: make_obj_dir libft_all minilibx_all $(NAME)
+
+make_obj_dir:
+	@if [ ! -d $(OBJDIR) ]; then mkdir $(OBJDIR); fi
+	@if [ ! -d $(OBJDIR)/parse ]; then mkdir $(OBJDIR)/parse; fi
 
 $(NAME): $(OBJ)
-	$(CC) $(LDFLAGS) -o $@ $(OBJ)
+	$(CC) -o $@ $(OBJ) $(LDFLAGS)
 
-%.o: %.c $(INCLUDE)
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CCFLAGS) -c -o $@ $<
 
 clean: libft_clean minilibx_clean

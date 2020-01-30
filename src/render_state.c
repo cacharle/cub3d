@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/15 14:40:14 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/30 15:14:39 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/01/30 15:50:48 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ t_image	*get_tex(t_state *state, t_render_state *rstate)
 	}
 	else if (rstate->side == SIDE_WE)
 	{
-		if (rstate->probe.x < state->pos.x)
+		if (rstate->probe.x > state->pos.x)
 			return (state->textures + TEX_WEST);
 		else
 			return (state->textures + TEX_EAST);
