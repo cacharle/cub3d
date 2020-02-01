@@ -1,12 +1,12 @@
-R 700 500
+R 1500 1200
 NO ./textures/wood.xpm
-SO ./textures/wood.xpm
-WE ./textures/brick.xpm
-EA ./textures/stone.xpm
+SO ./textures/eagle.xpm
+WE ./textures/redbrick.xpm
+EA ./textures/eagle.xpm
 
-S ./textures/brick.xpm
-F 0,225,0
-C 200,200,0
+S ./textures/barrel.xpm
+F 10,10,50
+C 20,20,0
 
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 1 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1

@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/30 15:05:20 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/01 11:58:35 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -206,7 +206,7 @@ int			render_update(void *param);
 void		render_update_window(t_state *state);
 void		render_column(t_state *state, int x);
 void		render_window_column(t_state *state, t_render_state *rstate);
-void		render_texture(t_state *state, t_render_state *rstate);
+void		render_texture(t_state *state, t_render_state *rstate, int *i);
 
 /*
 ** vector.c
@@ -254,8 +254,13 @@ void		rstate_init_probe(t_state *state, t_render_state *rstate);
 void		rstate_perp_dist(t_state *state, t_render_state *rstate);
 void		rstate_line_height(t_state *state, t_render_state *rstate);
 void		rstate_next_probe(t_render_state *rstate);
-t_image		*get_tex(t_state *state, t_render_state *rstate);
-int			get_tex_x(t_state *state, t_render_state *rstate, t_image *texture);
+
+/*
+** texture.c
+*/
+
+t_image		*texture_select(t_state *state, t_render_state *rstate);
+int			texture_x(t_state *state, t_render_state *rstate, t_image *texture);
 
 /*
 ** capture.c

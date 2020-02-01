@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 07:32:20 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/16 08:57:01 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/01 11:32:15 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void	helper_rotate_player(t_state *state, double rotation)
 
 /*
 ** Initial player direction vector
-** Since the map [0 0] is in the top left corner the north/south direction are slipped.
+** Since the map [0 0] is in the top left corner
+** the north/south direction are slipped.
 ** The camera plane has to stay perpendicular to the direction and
 ** create a camera with a 66 degree angle (which is a recommended angle for fps)
 */

@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/15 14:40:14 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/30 15:50:48 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/01 11:39:09 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,48 +158,4 @@ void	rstate_perp_dist(t_state *state, t_render_state *rstate)
 void	rstate_line_height(t_state *state, t_render_state *rstate)
 {
 	rstate->line_height = (int)((double)state->window.height / rstate->perp_dist);
-}
-
-t_image	*get_tex(t_state *state, t_render_state *rstate)
-{
-	if (rstate->side == SIDE_NS)
-	{
-		if (rstate->probe.y < state->pos.y)
-			return (state->textures + TEX_NORTH);
-		else
-			return (state->textures + TEX_SOUTH);
-	}
-	else if (rstate->side == SIDE_WE)
-	{
-		if (rstate->probe.x > state->pos.x)
-			return (state->textures + TEX_WEST);
-		else
-			return (state->textures + TEX_EAST);
-	}
-	return (NULL);
-}
-
-/*
-** Since we're drawing each column, all the texels we want to draw on the window
-** are on a single column of the texture.
-** First we find the x-coord relative to the wall we hit
-*/
-
-int			get_tex_x(t_state *state, t_render_state *rstate, t_image *texture)
-{
-	int		tex_x;
-	double	wall_x;
-
-	if (rstate->side == SIDE_WE)
-		wall_x = state->pos.y + rstate->perp_dist * rstate->ray.y;
-	else
-		wall_x = state->pos.x + rstate->perp_dist * rstate->ray.x;
-	wall_x -= floor(wall_x);
-
-	tex_x = (int)(wall_x * (double)texture->width);
-	if (rstate->side == 0 && rstate->ray.x > 0)
-		tex_x = texture->width - tex_x - 1;
-	if (rstate->side == 1 && rstate->ray.y < 0)
-		tex_x = texture->width - tex_x - 1;
-	return (tex_x);
 }
