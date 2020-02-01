@@ -6,14 +6,14 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:39:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/01 12:30:49 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/01 14:00:48 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-#define ROTATE_STEP (M_PI / 40.0)
-#define MOVE_SPEED 0.25
+#define ROTATE_STEP (M_PI / 20.0)
+#define MOVE_SPEED 0.24
 
 int	event_keydown(int key, t_state *state)
 {

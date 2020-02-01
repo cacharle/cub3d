@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:39:39 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/30 14:02:58 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/01 14:00:48 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,10 @@ int	main(int argc, char **argv)
 		return (1);
 	if (argc == 3)
 		return (capture(state));
-	/* printf("%d\n", state->window.size_line); */
 	mlx_hook(state->window_ptr, 2, (1L << 1), event_keydown, (void*)state);
 	mlx_hook(state->window_ptr, 17L, 0, event_quit, (void*)state);
 	mlx_loop_hook(state->mlx_ptr, render_update, (void*)state);
 	mlx_loop(state->mlx_ptr);
-	/* while (1) */
-	/* 	render_update(state); */
 	return (0);
 }
 

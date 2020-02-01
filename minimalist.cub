@@ -5,7 +5,7 @@ WE ./textures/redbrick.xpm
 EA ./textures/eagle.xpm
 
 S ./textures/barrel.xpm
-F 10,10,50
+F 10,10,10
 C 20,20,0
 
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1

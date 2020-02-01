@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/01 11:58:35 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/01 14:06:36 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -109,6 +109,8 @@ typedef struct	s_state
 	t_color		ceilling_color;
 	t_color		floor_color;
 	t_image		window;
+	t_image		window_sprite;
+	t_image		*surface;
 	char		*textures_path[TEXTURES_NUM];
 	t_image		textures[TEXTURES_NUM];
 }				t_state;
@@ -141,6 +143,43 @@ typedef struct				s_option_parser
 	char					*id;
 	t_option_parser_func	func;
 }							t_option_parser;
+
+typedef unsigned int	t_byte4;
+typedef unsigned short	t_byte2;
+typedef unsigned char	t_byte1;
+
+typedef struct
+{
+	struct
+	{
+		t_byte2	file_type;
+		t_byte4	file_size;
+		t_byte2	reserved1;
+		t_byte2	reserved2;
+		t_byte4	offset;
+	}			file_header;
+	struct
+	{
+		t_byte4	size;
+		t_byte4	width;
+		t_byte4	height;
+		t_byte2	planes;
+		t_byte2	depth;
+		t_byte4	compression;
+		t_byte4	size_image;
+		t_byte4	w_pix_per_meter;
+		t_byte4	h_pix_per_meter;
+		t_byte4	color_used;
+		t_byte4	color_important;
+	}			info_header;
+	struct
+	{
+		t_byte1	blue;
+		t_byte1	green;
+		t_byte1	red;
+		t_byte1	reserved;
+	}			color_table;
+}	t_bmp_header;
 
 /*
 ** parse/parse.c
@@ -203,18 +242,14 @@ void		load_texture(void *mlx_ptr, t_image *image, char *path);
 */
 
 int			render_update(void *param);
-void		render_update_window(t_state *state);
-void		render_column(t_state *state, int x);
+void		render_update_window(t_state *state, t_cell target);
+void		render_column(t_state *state, int x, t_cell target);
 void		render_window_column(t_state *state, t_render_state *rstate);
 void		render_texture(t_state *state, t_render_state *rstate, int *i);
 
 /*
 ** vector.c
 */
-
-# define VECTOR_MINUS(v) vector_scale(v, -1.0)
-# define VECTOR_SUB(v, w) vector_add(v, VECTOR_MINUS(w))
-# define VECTOR_ADD_CONST(v, c) vector_add(v, vector_new(c, c))
 
 t_vector	vector_add(t_vector a, t_vector b);
 t_vector	vector_scale(t_vector v, double scalar);
@@ -267,6 +302,7 @@ int			texture_x(t_state *state, t_render_state *rstate, t_image *texture);
 */
 
 int			capture(t_state *state);
-void		write_bmp(t_image *image);
+t_bool		bmp_write(t_image *image, t_bmp_header *header);
+void		bmp_fill_header(t_image *image, t_bmp_header *header);
 
 #endif
