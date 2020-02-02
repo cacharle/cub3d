@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 13:37:17 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/01 14:15:44 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/02 09:56:37 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,14 @@ int		render_update(void *param)
 	}
 	state->surface = &state->window;
 	render_update_window(state, CELL_WALL);
-	/* state->surface = &state->sprite_window; */
-	/* render_update_window(state, CELL_ITEM); */
 	mlx_put_image_to_window(state->mlx_ptr, state->window_ptr,
-			state->window.id, 0, 0);
+			state->surface->id, 0, 0);
+	state->surface = &state->sprite_window;
+	for (int i = 0; i < state->surface->width * state->surface->height; i++)
+		((unsigned int*)state->surface->data)[i] = 0xff000000;
+	render_update_window(state, CELL_ITEM);
+	mlx_put_image_to_window(state->mlx_ptr, state->window_ptr,
+			state->surface->id, 0, 0);
 	return (0);
 }
 
@@ -37,7 +41,7 @@ void	render_update_window(t_state *state, t_cell target)
 	int x;
 
 	x = -1;
-	while (++x < state->window.width)
+	while (++x < state->surface->width)
 		render_column(state, x, target);
 }
 
@@ -45,6 +49,7 @@ void	render_column(t_state *state, int x, t_cell target)
 {
 	t_render_state	rstate;
 
+	rstate.target = target;
 	rstate.x = x;
 	rstate_ray(state, &rstate);
 	rstate.map_pos = vector_new((double)((int)state->pos.x), (double)((int)state->pos.y));
@@ -53,13 +58,11 @@ void	render_column(t_state *state, int x, t_cell target)
 	rstate.map_step = vector_new(rstate.ray.x < 0.0 ? -1.0 : 1.0, rstate.ray.y < 0.0 ? -1.0 : 1.0);
 	while (TRUE)
 	{
-		if (rstate.probe.x < 0 || rstate.probe.y < 0
-				|| rstate.probe.x > state->map_width
-				|| rstate.probe.y > state->map_height)
-			return ;
 		rstate.side = rstate.probe.x < rstate.probe.y ? SIDE_WE : SIDE_NS;
 		rstate_next_probe(&rstate);
-		if (state->map[(int)rstate.map_pos.y][(int)rstate.map_pos.x] == CELL_WALL)
+		if (target == CELL_ITEM && state->map[(int)rstate.map_pos.y][(int)rstate.map_pos.x] == CELL_WALL)
+			return ;
+		if (state->map[(int)rstate.map_pos.y][(int)rstate.map_pos.x] == target)
 			break ;
 	}
 	rstate_perp_dist(state, &rstate);
@@ -106,7 +109,7 @@ void	render_texture(t_state *state, t_render_state *rstate, int *i)
 	{
 		tex_y = (int)tex_pos & (texture->height - 1);
 		tex_pos += tex_step;
-		/* ((t_color*)state->surface->data)[*i * state->surface->width + rstate->x] = */
-		/* 	((t_color*)texture->data)[texture->height * tex_y + tex_x]; */
+		((t_color*)state->surface->data)[*i * state->surface->width + rstate->x] =
+			((t_color*)texture->data)[texture->height * tex_y + tex_x];
 	}
 }

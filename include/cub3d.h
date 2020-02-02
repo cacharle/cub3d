@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/01 14:06:36 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/02 09:36:22 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -56,7 +56,7 @@ typedef union
 		t_byte		b;
 		t_byte		g;
 		t_byte		r;
-		t_byte		empty;
+		t_byte		alpha;
 	}				rgb;
 }					t_color;
 
@@ -109,7 +109,7 @@ typedef struct	s_state
 	t_color		ceilling_color;
 	t_color		floor_color;
 	t_image		window;
-	t_image		window_sprite;
+	t_image		sprite_window;
 	t_image		*surface;
 	char		*textures_path[TEXTURES_NUM];
 	t_image		textures[TEXTURES_NUM];
@@ -134,6 +134,7 @@ typedef struct	s_render_state
 	t_vector	map_step;
 	int			draw_start;
 	int			draw_end;
+	t_cell		target;
 }				t_render_state;
 
 typedef t_bool	(*t_option_parser_func)(t_state *state, char *line);

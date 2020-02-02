@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 13:15:11 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/01 13:49:43 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/02 08:33:14 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int		capture(t_state *state)
 {
 	t_bmp_header	header;
 
-	render_update_window(state);
+	render_update_window(state, CELL_WALL);
 	bmp_fill_header(&state->window, &header);
 	if (!bmp_write(&state->window, &header))
 	{
