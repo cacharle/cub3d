@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:39:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/02 09:52:09 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/03 00:44:39 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,7 @@ int	event_keydown(int key, t_state *state)
 		helper_rotate_player(state, -ROTATE_STEP);
 	else if (key == MLXK_RIGHT)
 		helper_rotate_player(state, ROTATE_STEP);
-	if (state->map[(int)state->pos.y][(int)state->pos.x] == CELL_WALL ||
-		state->map[(int)state->pos.y][(int)state->pos.x] == CELL_ITEM)
+	if (state->map[(int)state->pos.y][(int)state->pos.x] == CELL_WALL)
 		state->pos = saved_pos;
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/02 09:36:22 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/03 01:43:17 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -37,8 +37,6 @@
 
 # define TRUE 1
 # define FALSE 0
-
-# define SQUARE(x) ((x) * (x))
 
 typedef int	t_bool;
 
@@ -95,6 +93,12 @@ typedef struct
 	int		endian;
 }			t_image;
 
+typedef struct
+{
+	t_vector	pos;
+	double		dist;
+}				t_sprite;
+
 typedef struct	s_state
 {
 	t_bool		running;
@@ -109,10 +113,11 @@ typedef struct	s_state
 	t_color		ceilling_color;
 	t_color		floor_color;
 	t_image		window;
-	t_image		sprite_window;
-	t_image		*surface;
 	char		*textures_path[TEXTURES_NUM];
 	t_image		textures[TEXTURES_NUM];
+	double		*z_buffer;
+	int			sprites_num;
+	t_sprite	*sprites;
 }				t_state;
 
 typedef enum
@@ -173,13 +178,13 @@ typedef struct
 		t_byte4	color_used;
 		t_byte4	color_important;
 	}			info_header;
-	struct
-	{
-		t_byte1	blue;
-		t_byte1	green;
-		t_byte1	red;
-		t_byte1	reserved;
-	}			color_table;
+	// struct
+	// {
+	// 	t_byte1	blue;
+	// 	t_byte1	green;
+	// 	t_byte1	red;
+	// 	t_byte1	reserved;
+	// }			color_table;
 }	t_bmp_header;
 
 /*
@@ -243,8 +248,8 @@ void		load_texture(void *mlx_ptr, t_image *image, char *path);
 */
 
 int			render_update(void *param);
-void		render_update_window(t_state *state, t_cell target);
-void		render_column(t_state *state, int x, t_cell target);
+void		render_update_window(t_state *state);
+void		render_column(t_state *state, int x);
 void		render_window_column(t_state *state, t_render_state *rstate);
 void		render_texture(t_state *state, t_render_state *rstate, int *i);
 
@@ -253,6 +258,7 @@ void		render_texture(t_state *state, t_render_state *rstate, int *i);
 */
 
 t_vector	vector_add(t_vector a, t_vector b);
+t_vector	vector_sub(t_vector a, t_vector b);
 t_vector	vector_scale(t_vector v, double scalar);
 t_vector	vector_rotate(t_vector v, double angle);
 double		vector_norm(t_vector v);
@@ -278,7 +284,7 @@ t_bool		helper_is_player_cell(t_cell cell);
 void		helper_free_splited(char **splited);
 void		helper_rotate_player(t_state *state, double rotation);
 void		helper_init_dir_plane(t_state *state, int y, int x);
-// int			get_tex_x()
+t_bool		state_init_sprites(t_state *state);
 
 /*
 ** render_state.c
@@ -305,5 +311,12 @@ int			texture_x(t_state *state, t_render_state *rstate, t_image *texture);
 int			capture(t_state *state);
 t_bool		bmp_write(t_image *image, t_bmp_header *header);
 void		bmp_fill_header(t_image *image, t_bmp_header *header);
+
+/*
+** render_sprite.c
+*/
+
+void	render_update_sprite(t_state *state);
+
 
 #endif

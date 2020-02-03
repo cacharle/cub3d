@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/15 14:40:14 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/02 09:00:38 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/02 17:39:59 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	rstate_ray(t_state *state, t_render_state *rstate)
 {
 	double camera_x;
 
-	camera_x = 2.0 * (double)rstate->x / (double)state->surface->width - 1.0;
+	camera_x = 2.0 * (double)rstate->x / (double)state->window.width - 1.0;
 	rstate->ray = vector_add(state->dir, vector_scale(state->plane, camera_x));
 }
 
@@ -157,5 +157,5 @@ void	rstate_perp_dist(t_state *state, t_render_state *rstate)
 
 void	rstate_line_height(t_state *state, t_render_state *rstate)
 {
-	rstate->line_height = (int)((double)state->surface->height / rstate->perp_dist);
+	rstate->line_height = (int)((double)state->window.height / rstate->perp_dist);
 }

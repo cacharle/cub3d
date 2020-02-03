@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 01:28:01 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/16 08:43:09 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/02 22:29:59 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@ t_vector	vector_add(t_vector a, t_vector b)
 {
 	a.x += b.x;
 	a.y += b.y;
+	return (a);
+}
+
+t_vector	vector_sub(t_vector a, t_vector b)
+{
+	a.x -= b.x;
+	a.y -= b.y;
 	return (a);
 }
 

@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 10:59:15 by cacharle          #+#    #+#             */
-/*   Updated: 2020/01/11 13:03:33 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/02 19:42:34 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 t_state		*parse_check(t_state *state)
 {
 	int	i;
-	/* int	j; */
-	/* int player_count; */
+	int	j;
+	int player_count;
 
 	i = -1;
 	while (++i < state->map_width)
@@ -30,17 +30,16 @@ t_state		*parse_check(t_state *state)
 				|| state->map[i][state->map_width - 1] != CELL_WALL)
 			return (error_put_return_state_destroy(
 						"validate map without borders", state));
-	// maybe not necessary
-	/* player_count = 0; */
-	/* i = -1; */
-	/* while (++i < state->map_height) */
-	/* { */
-	/* 	j = -1; */
-	/* 	while (++j < state->map_width) */
-	/* 		if (helper_is_player_cell(state->map[i][j])) */
-	/* 			player_count++; */
-	/* } */
-	/* if (player_count != 1) */
-	/* 	return (state_destroy(state)); */
+	player_count = 0;
+	i = -1;
+	while (++i < state->map_height)
+	{
+		j = -1;
+		while (++j < state->map_width)
+			if (helper_is_player_cell(state->map[i][j]))
+				player_count++;
+	}
+	if (player_count != 1)
+		return (error_put_return_state_destroy("only one player allowed", state));
 	return (state);
 }

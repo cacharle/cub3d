@@ -27,7 +27,8 @@ SRCFILES = main.c \
 		   helper.c \
 		   error.c \
 		   capture.c \
-		   texture.c
+		   texture.c \
+		   render_sprite.c
 SRC = $(addprefix $(SRCDIR)/,$(SRCFILES))
 $(info $(SRC))
 OBJ = $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)

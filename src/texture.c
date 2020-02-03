@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/01 11:38:43 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/02 09:25:36 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/02 18:09:00 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 t_image	*texture_select(t_state *state, t_render_state *rstate)
 {
-	if (rstate->target == CELL_ITEM)
-		return (state->textures + TEX_SPRITE);
+	/* if (rstate->target == CELL_ITEM) */
+	/* 	return (state->textures + TEX_SPRITE); */
 	if (rstate->side == SIDE_NS)
 	{
 		if (rstate->map_pos.y < state->pos.y)
