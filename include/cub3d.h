@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/04 00:26:19 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 02:54:03 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -145,6 +145,20 @@ typedef struct	s_render_state
 	t_cell		target;
 }				t_render_state;
 
+typedef struct
+{
+	t_vector	sprite;
+	double		inverse_det;
+	t_vector	transform;
+	int			sprite_window_x;
+	int			draw_start_x;
+	int			draw_end_x;
+	int			sprite_height;
+	int			sprite_width;
+	int			draw_end_y;
+	int			draw_start;
+}				t_sprite_state;
+
 typedef t_bool	(*t_option_parser_func)(t_state *state, char *line);
 
 typedef struct				s_option_parser
@@ -217,19 +231,16 @@ int			render_update(void *param);
 void		render_update_window(t_state *state);
 void		render_column(t_state *state, int x);
 void		render_window_column(t_state *state, t_render_state *rstate);
-void		render_texture(t_state *state, t_render_state *rstate, int *i);
 
 /*
 ** vector.c
 */
 
 t_vector	vector_add(t_vector a, t_vector b);
-t_vector	vector_sub(t_vector a, t_vector b);
 t_vector	vector_scale(t_vector v, double scalar);
 t_vector	vector_rotate(t_vector v, double angle);
 double		vector_norm(t_vector v);
 t_vector	vector_new(double x, double y);
-t_vector	vector_apply(t_vector v, double (*f)(double));
 
 /*
 ** error.c
@@ -256,9 +267,8 @@ t_bool		state_init_sprites(t_state *state);
 ** render_state.c
 */
 
-void		rstate_ray(t_state *state, t_render_state *rstate);
-void		rstate_delta(t_render_state *rstate);
-void		rstate_init_probe(t_state *state, t_render_state *rstate);
+void		rstate_init(t_state *state, t_render_state *rstate, int x);
+void		rstate_post(t_state *state, t_render_state *rstate);
 void		rstate_perp_dist(t_state *state, t_render_state *rstate);
 void		rstate_line_height(t_state *state, t_render_state *rstate);
 void		rstate_next_probe(t_render_state *rstate);
@@ -267,6 +277,7 @@ void		rstate_next_probe(t_render_state *rstate);
 ** texture.c
 */
 
+void		texture_render(t_state *state, t_render_state *rstate, int *i);
 t_image		*texture_select(t_state *state, t_render_state *rstate);
 int			texture_x(t_state *state, t_render_state *rstate, t_image *texture);
 
@@ -287,5 +298,10 @@ void		bmp_fill_header(t_image *image, t_byte file_header[FILE_HEADER_SIZE],
 
 void	render_update_sprite(t_state *state);
 
+/*
+** sprite_sort.c
+*/
+
+void			sprite_sort(t_state *state);
 
 #endif

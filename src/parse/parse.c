@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 09:29:21 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/01 11:35:32 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 02:28:12 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,10 @@ t_state	*parse(char *filename)
 						"parse configuration", state, lines));
 	}
 	if ((state = parse_map(state, lines + i)) == NULL)
+	{
 		return (error_put_return_lines_state_destroy("parse map",
 					state, lines));
+	}
 	helper_free_splited(lines);
 	return (state);
 }
@@ -81,10 +83,12 @@ t_bool	parse_line(t_state *state, char *line)
 		return (TRUE);
 	i = -1;
 	while (++i < (int)(sizeof(g_option_parsers) / sizeof(t_option_parser)))
+	{
 		if (ft_strncmp(g_option_parsers[i].id, line,
 				ft_strlen(g_option_parsers[i].id)) == 0)
 			return (g_option_parsers[i].func(
 					state, line + ft_strlen(g_option_parsers[i].id) + 1));
+	}
 	return (FALSE);
 }
 

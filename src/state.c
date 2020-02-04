@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 16:39:57 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/03 18:52:21 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 03:37:21 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,38 +28,24 @@ t_state	*state_new(t_state *state)
 	if ((state->window_ptr = mlx_new_window(state->mlx_ptr,
 			state->window.width, state->window.height, WINDOW_TITLE)) == NULL)
 		return (state_destroy(state));
-	printf("init mlx and mlx window\n");
-
 	i = -1;
 	while (++i < TEXTURES_NUM)
 	{
+		puts(state->textures_path[i]);
 		load_texture(state->mlx_ptr, &state->textures[i],
 				state->textures_path[i]);
 		if (state->textures[i].id == NULL)
 			return (error_put_return_state_destroy("load texture", state));
 	}
-
 	if ((state->window.id = mlx_new_image(state->mlx_ptr,
 			state->window.width, state->window.height)) == NULL)
 		return (state_destroy(state));
 	state->window.data = mlx_get_data_addr(state->window.id,
 			&state->window.depth, &state->window.size_line,
 			&state->window.endian);
-	printf("init mlx window image\n");
-	/* state->sprite_window.width = state->window.width; */
-	/* state->sprite_window.height = state->window.height; */
-	/* if ((state->sprite_window.id = mlx_new_image(state->mlx_ptr, */
-	/* 		state->window.width, state->window.height)) == NULL) */
-	/* 	return (state_destroy(state)); */
-	/* state->sprite_window.data = mlx_get_data_addr(state->sprite_window.id, */
-	/* 		&state->sprite_window.depth, &state->sprite_window.size_line, */
-	/* 		&state->sprite_window.endian); */
-	/* printf("init mlx sprite image\n"); */
 	state_init_player(state);
-	printf("init player\n");
-	if ((state->z_buffer = (double*)malloc(sizeof(double) * state->window.width)) == NULL)
+	if ((state->z_buffer = malloc(sizeof(double) * state->window.width)) == NULL)
 		return (error_put_return_state_destroy("create z buffer", state));
-	printf("init z_buffer\n");
 	if (!state_init_sprites(state))
 		return (error_put_return_state_destroy("create sprites pos", state));
 	return (state);
@@ -94,7 +80,6 @@ t_state	*state_new_empty(void)
 	state->mlx_ptr = NULL;
 	state->window_ptr = NULL;
 	state->window.id = NULL;
-	/* state->sprite_window.id = NULL; */
 	i = -1;
 	while (++i < TEXTURES_NUM)
 	{
@@ -126,21 +111,15 @@ void	*state_destroy(t_state *state)
 		if (state->mlx_ptr != NULL && state->textures[i].id != NULL)
 			mlx_destroy_image(state->mlx_ptr, state->textures[i].id);
 	}
-	printf("free window image\n");
 	if (state->mlx_ptr != NULL && state->window.id != NULL)
 		mlx_destroy_image(state->mlx_ptr, state->window.id);
-	/* printf("free sprite window image\n"); */
-	/* if (state->mlx_ptr != NULL && state->sprite_window.id != NULL) */
-	/* 	mlx_destroy_image(state->mlx_ptr, state->sprite_window.id); */
-	printf("free window\n");
 	if (state->mlx_ptr && state->window_ptr)
 		mlx_destroy_window(state->mlx_ptr, state->window_ptr);
-	printf("free map\n");
 	if (state->map != NULL)
 		while (state->map_height-- > 0 && state->map[state->map_height] != NULL)
 			free(state->map[state->map_height]);
 	free(state->map);
-	printf("free state\n");
+	printf("===free state\n");
 	free(state);
 	return (NULL);
 }

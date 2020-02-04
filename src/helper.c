@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 07:32:20 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/02 22:16:14 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 02:17:38 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void	helper_init_dir_plane(t_state *state, int y, int x)
 	state->plane = vector_rotate(state->dir, M_PI_2);
 	state->plane = vector_scale(state->plane, 1.0 / vector_norm(state->plane));
 	state->plane = vector_scale(state->plane, 0.66);
-	state->plane = vector_apply(state->plane, &fabs);
 }
 
 t_bool	state_init_sprites(t_state *state)
@@ -76,16 +75,15 @@ t_bool	state_init_sprites(t_state *state)
 				counter++;
 	}
 	state->sprites_num = counter;
-	if ((state->sprites = (t_sprite*)malloc(sizeof(t_sprite) * counter)) == NULL)
+	if ((state->sprites = malloc(sizeof(t_sprite) * counter)) == NULL)
 		return (FALSE);
-	counter = 0;
-	i = -1;
-	while (++i < state->map_height)
+	while (i-- > 0)
 	{
 		j = -1;
 		while (++j < state->map_width)
 			if (state->map[i][j] == CELL_ITEM)
-				state->sprites[counter++].pos = vector_new((double)j + 0.5, (double)i + 0.5);
+				state->sprites[--counter].pos =
+							vector_new((double)j + 0.5, (double)i + 0.5);
 	}
 	return (TRUE);
 }

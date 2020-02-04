@@ -6,16 +6,36 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/01 11:38:43 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/02 18:09:00 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 03:34:54 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
+void	texture_render(t_state *state, t_render_state *rstate, int *i)
+{
+	int		tex_x;
+	int		tex_y;
+	double	tex_step;
+	double	tex_pos;
+	t_image	*texture;
+
+	texture = texture_select(state, rstate);
+	tex_x = texture_x(state, rstate, texture);
+	tex_step = (double)texture->height / (double)rstate->line_height;
+	tex_pos = (rstate->draw_start - state->window.height / 2
+			+ rstate->line_height / 2) * tex_step;
+	while ((*i)++ < rstate->draw_end)
+	{
+		tex_y = (int)tex_pos & (texture->height - 1);
+		tex_pos += tex_step;
+		((t_color*)state->window.data)[*i * state->window.width + rstate->x] =
+			((t_color*)texture->data)[texture->height * tex_y + tex_x];
+	}
+}
+
 t_image	*texture_select(t_state *state, t_render_state *rstate)
 {
-	/* if (rstate->target == CELL_ITEM) */
-	/* 	return (state->textures + TEX_SPRITE); */
 	if (rstate->side == SIDE_NS)
 	{
 		if (rstate->map_pos.y < state->pos.y)

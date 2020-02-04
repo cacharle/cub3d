@@ -6,30 +6,18 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 10:59:15 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/02 19:42:34 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 02:26:18 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-t_state		*parse_check(t_state *state)
+static t_bool	check_player_count(t_state *state)
 {
 	int	i;
 	int	j;
 	int player_count;
 
-	i = -1;
-	while (++i < state->map_width)
-		if (state->map[0][i] != CELL_WALL
-				|| state->map[state->map_height - 1][i] != CELL_WALL)
-			return (error_put_return_state_destroy(
-						"validate map without borders", state));
-	i = -1;
-	while (++i < state->map_height)
-		if (state->map[i][0] != CELL_WALL
-				|| state->map[i][state->map_width - 1] != CELL_WALL)
-			return (error_put_return_state_destroy(
-						"validate map without borders", state));
 	player_count = 0;
 	i = -1;
 	while (++i < state->map_height)
@@ -39,7 +27,33 @@ t_state		*parse_check(t_state *state)
 			if (helper_is_player_cell(state->map[i][j]))
 				player_count++;
 	}
-	if (player_count != 1)
-		return (error_put_return_state_destroy("only one player allowed", state));
+	return (player_count == 1);
+}
+
+t_state			*parse_check(t_state *state)
+{
+	int	i;
+
+	i = -1;
+	while (++i < state->map_width)
+	{
+		if (state->map[0][i] != CELL_WALL
+				|| state->map[state->map_height - 1][i] != CELL_WALL)
+			return (error_put_return_state_destroy(
+						"validate map without borders", state));
+	}
+	i = -1;
+	while (++i < state->map_height)
+	{
+		if (state->map[i][0] != CELL_WALL
+				|| state->map[i][state->map_width - 1] != CELL_WALL)
+			return (error_put_return_state_destroy(
+						"validate map without borders", state));
+	}
+	if (!check_player_count(state))
+	{
+		return (error_put_return_state_destroy(
+					"validate map with other than one player", state));
+	}
 	return (state);
 }
