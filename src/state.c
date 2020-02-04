@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 16:39:57 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/02 22:16:47 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/03 18:52:21 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ t_state	*state_new(t_state *state)
 	i = -1;
 	while (++i < TEXTURES_NUM)
 	{
-		puts(state->textures_path[i]);
 		load_texture(state->mlx_ptr, &state->textures[i],
 				state->textures_path[i]);
 		if (state->textures[i].id == NULL)

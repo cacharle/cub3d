@@ -6,132 +6,128 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 13:15:11 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/03 02:25:43 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 00:29:59 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-#define BM_FILE_TYPE 19778
-#define DATA_OFFSET 1078
-#define BITMAP_INFO_HEADER_SIZE 0x424d
 #define CAPTURE_FILENAME "capture.bmp"
+#define IMG_DEPTH 3
 
 int		capture(t_state *state)
 {
-	t_bmp_header	header;
+	t_byte	file_header[FILE_HEADER_SIZE];
+	t_byte	info_header[INFO_HEADER_SIZE];
 
 	render_update_window(state);
-	bmp_fill_header(&state->window, &header);
-	if (!bmp_write(&state->window, &header))
+	render_update_sprite(state);
+	bmp_fill_header(&state->window, file_header, info_header);
+	if (!bmp_write(&state->window, file_header, info_header))
 	{
 		state_destroy(state);
 		return (1);
 	}
+	state_destroy(state);
 	return (0);
 }
 
-unsigned char* createBitmapFileHeader(int height, int width, int paddingSize){
-	int fileSize = 14 + 40 + (3*width+paddingSize) * height;
+/*
+** bmp file format:
+**     header:
+**         file_header:
+**             2: signature = "BM"
+**             4: file size
+**             4: reserved
+**             4: offset to pixel array
+**         info_header:
+**	       4: header size
+**	       4: image width
+**	       4: image height
+**	       2: number of color planes
+**	       2: bits per pixel
+**	       4: compression
+**	       4: image size
+**	       4: horizontal resolution
+**	       4: vertical resolution
+**	       4: colors in color table
+**	       4: important color count
+**     data:
+**         pixel in rgb format (without alpha component)
+**         padding added at the end of each pixel row
+**         so the length of the row is a multiple of 4
+*/
 
-	static unsigned char fileHeader[] = {
-		0,0, /// signature
-		0,0,0,0, /// image file size in bytes
-		0,0,0,0, /// reserved
-		0,0,0,0, /// start of pixel array
-	};
-
-	fileHeader[ 0] = (unsigned char)('B');
-	fileHeader[ 1] = (unsigned char)('M');
-	fileHeader[ 2] = (unsigned char)(fileSize    );
-	fileHeader[ 3] = (unsigned char)(fileSize>> 8);
-	fileHeader[ 4] = (unsigned char)(fileSize>>16);
-	fileHeader[ 5] = (unsigned char)(fileSize>>24);
-	fileHeader[10] = (unsigned char)(14 + 40);
-
-	return fileHeader;
-}
-
-unsigned char* createBitmapInfoHeader(int height, int width){
-	static unsigned char infoHeader[] = {
-		0,0,0,0, /// header size
-		0,0,0,0, /// image width
-		0,0,0,0, /// image height
-		0,0, /// number of color planes
-		0,0, /// bits per pixel
-		0,0,0,0, /// compression
-		0,0,0,0, /// image size
-		0,0,0,0, /// horizontal resolution
-		0,0,0,0, /// vertical resolution
-		0,0,0,0, /// colors in color table
-		0,0,0,0, /// important color count
-	};
-
-	infoHeader[ 0] = (unsigned char)(40);
-	infoHeader[ 4] = (unsigned char)(width    );
-	infoHeader[ 5] = (unsigned char)(width>> 8);
-	infoHeader[ 6] = (unsigned char)(width>>16);
-	infoHeader[ 7] = (unsigned char)(width>>24);
-	infoHeader[ 8] = (unsigned char)(height    );
-	infoHeader[ 9] = (unsigned char)(height>> 8);
-	infoHeader[10] = (unsigned char)(height>>16);
-	infoHeader[11] = (unsigned char)(height>>24);
-	infoHeader[12] = (unsigned char)(1);
-	infoHeader[14] = (unsigned char)(3*8);
-
-	return infoHeader;
-}
-
-t_bool	bmp_write(t_image *image, t_bmp_header *header)
+t_bool	bmp_write(t_image *image, t_byte file_header[FILE_HEADER_SIZE],
+						t_byte info_header[INFO_HEADER_SIZE])
 {
-	int	fd;
-
-	unsigned char padding[3] = {0, 0, 0};
-	int paddingSize = (4 - (image->width*3) % 4) % 4; //redundant?
-	unsigned char* fileHeader = createBitmapFileHeader(image->height, image->width, paddingSize);
-	unsigned char* infoHeader = createBitmapInfoHeader(image->height, image->width);
+	int		fd;
+	t_byte	*bmp_data;
 
 	if ((fd = open(CAPTURE_FILENAME, O_WRONLY | O_CREAT, S_IRWXU)) < 0)
 		return (FALSE);
-
-	write(fd, fileHeader, 14);
-	write(fd, infoHeader, 40);
-	/* write(fd, &header, sizeof(t_bmp_header)); */
-	for (int i = 0; i < image->width; i++)
+	if ((bmp_data = malloc(sizeof(unsigned char) *
+			(image->width * IMG_DEPTH))) == NULL)
 	{
-		for (int j = 0; j < image->height; j++)
-		{
-			write(fd, &image->data[4 * (i * image->width + j)], 3);
-		}
-		write(fd, padding, paddingSize);
+		close(fd);
+		return (FALSE);
 	}
-	/* write(fd, image->data, image->width * image->height * 4); */
+	write(fd, file_header, FILE_HEADER_SIZE);
+	write(fd, info_header, INFO_HEADER_SIZE);
+	bmp_write_pixels(fd, image, bmp_data);
 	close(fd);
 	return (TRUE);
 }
 
-void	bmp_fill_header(t_image *image, t_bmp_header *header)
+void	bmp_write_pixels(int fd, t_image *image, t_byte *bmp_data)
 {
-	header->file_header.file_type = BM_FILE_TYPE;
-	header->file_header.file_size = sizeof(t_bmp_header) + image->width * image->height * 3;
-	header->file_header.reserved1 = 0;
-	header->file_header.reserved1 = 0;
-	header->file_header.offset = sizeof(t_bmp_header);
+	int		i;
+	int		j;
+	t_byte	padding[3];
+	int		padding_size;
 
-	header->info_header.size = sizeof(header->info_header);
-	header->info_header.width = image->width;
-	header->info_header.height = image->height;
-	header->info_header.planes = 0;
-	header->info_header.depth = 8 * 3;
-	header->info_header.compression = 0;
-	header->info_header.size_image = image->width * image->height * 3;
-	header->info_header.w_pix_per_meter = 0;
-	header->info_header.h_pix_per_meter = 0;
-	header->info_header.color_used = 0;
-	header->info_header.color_important = 0;
+	ft_bzero(padding, 3);
+	padding_size = (4 - (image->width * IMG_DEPTH) % 4) % 4;
+	i = image->height;
+	while (--i >= 0)
+	{
+		j = -1;
+		while (++j < image->width)
+		{
+			bmp_data[3 * j + 0] = image->data[4 * (i * image->width + j) + 0];
+			bmp_data[3 * j + 1] = image->data[4 * (i * image->width + j) + 1];
+			bmp_data[3 * j + 2] = image->data[4 * (i * image->width + j) + 2];
+		}
+		write(fd, bmp_data, image->width * 3);
+		write(fd, padding, padding_size);
+	}
+}
 
-	/* header->color_table.blue = 0xff; */
-	/* header->color_table.green = 0xff; */
-	/* header->color_table.red = 0xff; */
-	/* header->color_table.reserved = 0; */
+void	bmp_fill_header(t_image *image, t_byte file_header[FILE_HEADER_SIZE],
+						t_byte info_header[INFO_HEADER_SIZE])
+{
+	int	file_size;
+
+	file_size = FILE_HEADER_SIZE + INFO_HEADER_SIZE + (IMG_DEPTH * image->width
+			+ ((4 - (image->width * IMG_DEPTH) % 4) % 4)) * image->height;
+	ft_bzero(file_header, FILE_HEADER_SIZE);
+	ft_bzero(info_header, INFO_HEADER_SIZE);
+	file_header[0] = (unsigned char)('B');
+	file_header[1] = (unsigned char)('M');
+	file_header[2] = (unsigned char)(file_size);
+	file_header[3] = (unsigned char)(file_size >> 8);
+	file_header[4] = (unsigned char)(file_size >> 16);
+	file_header[5] = (unsigned char)(file_size >> 24);
+	file_header[10] = (unsigned char)(FILE_HEADER_SIZE + INFO_HEADER_SIZE);
+	info_header[0] = (unsigned char)(INFO_HEADER_SIZE);
+	info_header[4] = (unsigned char)(image->width);
+	info_header[5] = (unsigned char)(image->width >> 8);
+	info_header[6] = (unsigned char)(image->width >> 16);
+	info_header[7] = (unsigned char)(image->width >> 24);
+	info_header[8] = (unsigned char)(image->height);
+	info_header[9] = (unsigned char)(image->height >> 8);
+	info_header[10] = (unsigned char)(image->height >> 16);
+	info_header[11] = (unsigned char)(image->height >> 24);
+	info_header[12] = (unsigned char)(1);
+	info_header[14] = (unsigned char)(IMG_DEPTH * 8);
 }

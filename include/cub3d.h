@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/03 01:43:17 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 00:26:19 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -34,6 +34,9 @@
 
 # define MLX_LITTLE_ENDIAN 0
 # define MLX_BIG_ENDIAN 1
+
+# define FILE_HEADER_SIZE 14
+# define INFO_HEADER_SIZE 40
 
 # define TRUE 1
 # define FALSE 0
@@ -149,43 +152,6 @@ typedef struct				s_option_parser
 	char					*id;
 	t_option_parser_func	func;
 }							t_option_parser;
-
-typedef unsigned int	t_byte4;
-typedef unsigned short	t_byte2;
-typedef unsigned char	t_byte1;
-
-typedef struct
-{
-	struct
-	{
-		t_byte2	file_type;
-		t_byte4	file_size;
-		t_byte2	reserved1;
-		t_byte2	reserved2;
-		t_byte4	offset;
-	}			file_header;
-	struct
-	{
-		t_byte4	size;
-		t_byte4	width;
-		t_byte4	height;
-		t_byte2	planes;
-		t_byte2	depth;
-		t_byte4	compression;
-		t_byte4	size_image;
-		t_byte4	w_pix_per_meter;
-		t_byte4	h_pix_per_meter;
-		t_byte4	color_used;
-		t_byte4	color_important;
-	}			info_header;
-	// struct
-	// {
-	// 	t_byte1	blue;
-	// 	t_byte1	green;
-	// 	t_byte1	red;
-	// 	t_byte1	reserved;
-	// }			color_table;
-}	t_bmp_header;
 
 /*
 ** parse/parse.c
@@ -309,8 +275,11 @@ int			texture_x(t_state *state, t_render_state *rstate, t_image *texture);
 */
 
 int			capture(t_state *state);
-t_bool		bmp_write(t_image *image, t_bmp_header *header);
-void		bmp_fill_header(t_image *image, t_bmp_header *header);
+t_bool		bmp_write(t_image *image, t_byte file_header[FILE_HEADER_SIZE],
+						t_byte info_header[INFO_HEADER_SIZE]);
+void		bmp_write_pixels(int fd, t_image *image, t_byte *bmp_data);
+void		bmp_fill_header(t_image *image, t_byte file_header[FILE_HEADER_SIZE],
+						t_byte info_header[INFO_HEADER_SIZE]);
 
 /*
 ** render_sprite.c

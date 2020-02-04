@@ -3,3 +3,5 @@
 The cub3d project of school 42.
 
 ![screenshot](./screenshot.png)
+
+![screenshot](./screenshot_me.png)
