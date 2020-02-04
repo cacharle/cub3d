@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/04 02:54:03 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 04:09:56 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
+# include <errno.h>
 # include <unistd.h>
 # include <fcntl.h>
 # include <stdlib.h>
@@ -172,10 +173,15 @@ typedef struct				s_option_parser
 */
 
 t_state		*parse(char *filename);
-char		**get_file_lines(char *filename);
 t_bool		parse_line(t_state *state, char *line);
 t_state		*parse_map(t_state *state, char **lines);
 t_cell		*create_map_row(char *line);
+
+/*
+** parse/parse_file.c
+*/
+
+char		**get_file_lines(char *filename);
 
 /*
 ** parse/parse_check.c

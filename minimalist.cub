@@ -1,15 +1,37 @@
-R 1201 900
+
+
+
+R 200 200
+
 NO ./textures/greystone.xpm
+
+
+
 SO ./textures/greystone.xpm
+
+
+
+
 WE ./textures/greystone.xpm
+
+
 EA ./textures/greystone.xpm
-S ./textures/cacharle.xpm
+
+
+
+
+S            ./textures/cacharle.xpm         
+
+
+
+
 F 10,10,10
 C 40,40,40
 
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 1 0 0 0 0 0 2 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
 1 0 1 1 0 0 0 0 0 1 1 1 0 0 0 0 0 0 2 0 0 0 0 0 1 0 0 0 1
+
 1 2 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1
 1 0 1 1 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1
 1 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 1 1 1 0 1 1 1 1 0 2 0 1

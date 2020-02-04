@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 10:59:15 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/04 02:26:18 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 05:07:22 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ t_state			*parse_check(t_state *state)
 {
 	int	i;
 
+	if (state == NULL)
+		return (NULL);
 	i = -1;
 	while (++i < state->map_width)
 	{

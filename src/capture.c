@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/11 13:15:11 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/04 00:29:59 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 05:32:47 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ t_bool	bmp_write(t_image *image, t_byte file_header[FILE_HEADER_SIZE],
 	int		fd;
 	t_byte	*bmp_data;
 
-	if ((fd = open(CAPTURE_FILENAME, O_WRONLY | O_CREAT, S_IRWXU)) < 0)
+	if ((fd = open(CAPTURE_FILENAME, O_WRONLY | O_CREAT, 0644)) < 0)
 		return (FALSE);
 	if ((bmp_data = malloc(sizeof(unsigned char) *
 			(image->width * IMG_DEPTH))) == NULL)

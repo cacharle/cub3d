@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 09:29:21 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/04 02:28:12 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 04:41:26 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,54 +40,37 @@ t_state	*parse(char *filename)
 	return (state);
 }
 
-char	**get_file_lines(char *filename)
-{
-	int		fd;
-	int		ret;
-	char	buf[CUB3D_BUFFER_SIZE + 1];
-	char	*file;
-
-	if ((fd = open(filename, O_RDONLY)) < 0)
-		return (NULL);
-	if ((file = ft_strdup("")) == NULL)
-		return (NULL);
-	while ((ret = read(fd, buf, CUB3D_BUFFER_SIZE)) > 0)
-	{
-		buf[ret] = '\0';
-		if ((file = ft_strjoin(file, buf)) == NULL)
-			return (NULL);
-	}
-	if (ret == -1)
-		return (NULL);
-	close(fd);
-	return (ft_split(file, '\n'));
-}
-
 static t_option_parser	g_option_parsers[] =
 {
-	{"R", parse_resolution},
-	{"NO", parse_north_texture},
-	{"SO", parse_south_texture},
-	{"WE", parse_west_texture},
-	{"EA", parse_east_texture},
-	{"S", parse_sprite_texture},
-	{"F", parse_floor_color},
-	{"C", parse_ceilling_color}
+	{"R ", parse_resolution},
+	{"NO ", parse_north_texture},
+	{"SO ", parse_south_texture},
+	{"WE ", parse_west_texture},
+	{"EA ", parse_east_texture},
+	{"S ", parse_sprite_texture},
+	{"F ", parse_floor_color},
+	{"C ", parse_ceilling_color}
 };
 
 t_bool	parse_line(t_state *state, char *line)
 {
-	int i;
+	int 	i;
+	char	*tmp;
 
 	if (!*line)
 		return (TRUE);
 	i = -1;
 	while (++i < (int)(sizeof(g_option_parsers) / sizeof(t_option_parser)))
 	{
+
 		if (ft_strncmp(g_option_parsers[i].id, line,
 				ft_strlen(g_option_parsers[i].id)) == 0)
-			return (g_option_parsers[i].func(
-					state, line + ft_strlen(g_option_parsers[i].id) + 1));
+		{
+			tmp = line + ft_strlen(g_option_parsers[i].id);
+			while (*tmp == ' ')
+				tmp++;
+			return (g_option_parsers[i].func(state, tmp));
+		}
 	}
 	return (FALSE);
 }

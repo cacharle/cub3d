@@ -15,6 +15,7 @@ LDFLAGS = -L$(LIBFT_PATH) -lft \
 NAME = cub3D
 SRCFILES = main.c \
 		   parse/parse.c \
+		   parse/parse_file.c \
 		   parse/parse_textures.c \
 		   parse/parse_color.c \
 		   parse/parse_resolution.c \

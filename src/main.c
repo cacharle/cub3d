@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:39:39 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/03 20:45:17 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 05:29:40 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	main(int argc, char **argv)
 	return (0);
 }
 
-
+/*  */
 /* int main(int argc, char **argv) */
 /* { */
 /* 	(void)argc; */
@@ -37,11 +37,11 @@ int	main(int argc, char **argv)
 /* 	if (s == NULL) */
 /* 		return (1); */
 /* 	printf("R %d %d\n", s->window.width, s->window.height); */
-/* 	printf("NO %s\n", s->textures_path[TEX_NORTH]); */
-/* 	printf("SO %s\n", s->textures_path[TEX_SOUTH]); */
-/* 	printf("WE %s\n", s->textures_path[TEX_WEST]); */
-/* 	printf("EA %s\n\n", s->textures_path[TEX_EAST]); */
-/* 	printf("S %s\n", s->textures_path[TEX_SPRITE]); */
+/* 	printf("NO |%s|\n", s->textures_path[TEX_NORTH]); */
+/* 	printf("SO |%s|\n", s->textures_path[TEX_SOUTH]); */
+/* 	printf("WE |%s|\n", s->textures_path[TEX_WEST]); */
+/* 	printf("EA |%s|\n\n", s->textures_path[TEX_EAST]); */
+/* 	printf("S |%s|\n", s->textures_path[TEX_SPRITE]); */
 /* 	printf("F %d,%d,%d\n", s->floor_color.rgb.r, s->floor_color.rgb.g, s->floor_color.rgb.b); */
 /* 	printf("C %d,%d,%d\n\n", s->ceilling_color.rgb.r, s->ceilling_color.rgb.g, s->ceilling_color.rgb.b); */
 /* 	printf("%dx%d\n", s->map_height, s->map_width); */
@@ -61,12 +61,12 @@ int	main(int argc, char **argv)
 /* 		printf("\n"); */
 /* 	} */
 /* 	printf("post state_new\n"); */
-/* 	if ((s = state_new(s)) == NULL) */
-/* 	{ */
-/* 		printf("Error: state new"); */
-/* 		return 1; */
-/* 	} */
-/* 	printf("state->pos [%f %f]\n", s->pos.x, s->pos.y); */
-/* 	state_destroy(s); */
+/* 	#<{(| if ((s = state_new(s)) == NULL) |)}># */
+/* 	#<{(| { |)}># */
+/* 	#<{(| 	printf("Error: state new"); |)}># */
+/* 	#<{(| 	return 1; |)}># */
+/* 	#<{(| } |)}># */
+/* 	#<{(| printf("state->pos [%f %f]\n", s->pos.x, s->pos.y); |)}># */
+/* 	#<{(| state_destroy(s); |)}># */
 /* 	return 0; */
 /* } */
