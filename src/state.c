@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 16:39:57 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/05 01:28:31 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/05 01:49:22 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ t_state	*state_new_empty(void)
 	state->floor_color.hexcode = 0x0;
 	state->z_buffer = NULL;
 	state->sprites = NULL;
+	state->pflags = 0x0;
 	return (state);
 }
 

@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: cacharle <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2020/02/05 01:34:15 by cacharle          #+#    #+#              #
+#    Updated: 2020/02/05 01:34:18 by cacharle         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 LIBFT_PATH = ./libft
 MINILIBX_PATH = ./miniLibX
 
@@ -7,7 +19,7 @@ OBJDIR = obj
 
 CC = gcc
 CCFLAGS = -I$(LIBFT_PATH) -I$(MINILIBX_PATH) -I$(INCLUDEDIR) \
-		  -Wall -Wextra #-Werror
+		  -Wall -Wextra -Werror
 LDFLAGS = -L$(LIBFT_PATH) -lft \
 		  -L$(MINILIBX_PATH) -lmlx \
 		  -framework OpenGL -framework AppKit -lm
