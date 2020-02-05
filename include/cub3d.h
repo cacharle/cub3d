@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 06:40:37 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/04 04:09:56 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/05 01:19:02 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -103,8 +103,19 @@ typedef struct
 	double		dist;
 }				t_sprite;
 
+typedef unsigned short	t_pflags;
+# define PFLAGS_R (1 << 0)
+# define PFLAGS_NO (1 << 1)
+# define PFLAGS_SO (1 << 2)
+# define PFLAGS_WE (1 << 3)
+# define PFLAGS_EA (1 << 4)
+# define PFLAGS_S (1 << 5)
+# define PFLAGS_F (1 << 6)
+# define PFLAGS_C (1 << 7)
+
 typedef struct	s_state
 {
+	t_pflags	pflags;
 	t_bool		running;
 	void		*mlx_ptr;
 	void		*window_ptr;
@@ -175,13 +186,15 @@ typedef struct				s_option_parser
 t_state		*parse(char *filename);
 t_bool		parse_line(t_state *state, char *line);
 t_state		*parse_map(t_state *state, char **lines);
-t_cell		*create_map_row(char *line);
+t_cell		*create_map_row(t_state *state, char *line);
 
 /*
 ** parse/parse_file.c
 */
 
 char		**get_file_lines(char *filename);
+int			parse_premap(t_state *state, char **lines);
+t_bool		create_map_row_char(char c, t_cell *row, int i);
 
 /*
 ** parse/parse_check.c
@@ -227,7 +240,7 @@ t_state		*state_new(t_state *state);
 void		state_init_player(t_state *state);
 t_state		*state_new_empty(void);
 void		*state_destroy(t_state *state);
-void		load_texture(void *mlx_ptr, t_image *image, char *path);
+t_bool		state_init_textures(t_state *state);
 
 /*
 ** render.c

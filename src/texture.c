@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/01 11:38:43 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/04 03:34:54 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/04 23:16:02 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ t_image	*texture_select(t_state *state, t_render_state *rstate)
 	}
 	else if (rstate->side == SIDE_WE)
 	{
-		if (rstate->map_pos.x > state->pos.x)
+		if (rstate->map_pos.x < state->pos.x)
 			return (state->textures + TEX_WEST);
 		else
 			return (state->textures + TEX_EAST);
@@ -70,8 +70,8 @@ int		texture_x(t_state *state, t_render_state *rstate, t_image *texture)
 		wall_x = state->pos.x + rstate->perp_dist * rstate->ray.x;
 	wall_x -= floor(wall_x);
 	tex_x = (int)(wall_x * (double)texture->width);
-	if ((rstate->side == SIDE_NS && rstate->ray.x > 0) ||
-			(rstate->side == SIDE_WE && rstate->ray.y < 0))
+	if ((rstate->side == SIDE_NS && rstate->ray.y > 0) ||
+			(rstate->side == SIDE_WE && rstate->ray.x < 0))
 		tex_x = texture->width - tex_x - 1;
 	return (tex_x);
 }

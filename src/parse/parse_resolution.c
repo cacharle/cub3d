@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 09:29:27 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/04 04:40:35 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/05 00:04:03 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ t_bool	parse_resolution(t_state *state, char *line)
 {
 	long	tmp;
 
+	if (state->pflags & PFLAGS_R)
+		return (FALSE);
 	errno = 0;
 	if ((tmp = ft_strtol(line, &line, 10)) < MIN_RES)
 		return (FALSE);
@@ -37,5 +39,6 @@ t_bool	parse_resolution(t_state *state, char *line)
 	state->window.height = tmp;
 	if (*line != '\0' || errno != 0 || state->window.height > 2160)
 		return (FALSE);
+	state->pflags |= PFLAGS_R;
 	return (TRUE);
 }

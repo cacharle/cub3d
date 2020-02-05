@@ -6,7 +6,7 @@
 /*   By: cacharle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 16:39:57 by cacharle          #+#    #+#             */
-/*   Updated: 2020/02/04 03:37:21 by cacharle         ###   ########.fr       */
+/*   Updated: 2020/02/05 01:28:31 by cacharle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 
 t_state	*state_new(t_state *state)
 {
-	int	i;
-
 	if (state == NULL)
 		return (NULL);
 	state->running = TRUE;
@@ -28,15 +26,8 @@ t_state	*state_new(t_state *state)
 	if ((state->window_ptr = mlx_new_window(state->mlx_ptr,
 			state->window.width, state->window.height, WINDOW_TITLE)) == NULL)
 		return (state_destroy(state));
-	i = -1;
-	while (++i < TEXTURES_NUM)
-	{
-		puts(state->textures_path[i]);
-		load_texture(state->mlx_ptr, &state->textures[i],
-				state->textures_path[i]);
-		if (state->textures[i].id == NULL)
-			return (error_put_return_state_destroy("load texture", state));
-	}
+	if (!state_init_textures(state))
+		return (error_put_return_state_destroy("load texture", state));
 	if ((state->window.id = mlx_new_image(state->mlx_ptr,
 			state->window.width, state->window.height)) == NULL)
 		return (state_destroy(state));
@@ -44,7 +35,8 @@ t_state	*state_new(t_state *state)
 			&state->window.depth, &state->window.size_line,
 			&state->window.endian);
 	state_init_player(state);
-	if ((state->z_buffer = malloc(sizeof(double) * state->window.width)) == NULL)
+	if ((state->z_buffer = malloc(sizeof(double)
+					* state->window.width)) == NULL)
 		return (error_put_return_state_destroy("create z buffer", state));
 	if (!state_init_sprites(state))
 		return (error_put_return_state_destroy("create sprites pos", state));
@@ -119,16 +111,27 @@ void	*state_destroy(t_state *state)
 		while (state->map_height-- > 0 && state->map[state->map_height] != NULL)
 			free(state->map[state->map_height]);
 	free(state->map);
-	printf("===free state\n");
 	free(state);
 	return (NULL);
 }
 
-void	load_texture(void *mlx_ptr, t_image *image, char *path)
+t_bool	state_init_textures(t_state *state)
 {
-	if ((image->id = mlx_xpm_file_to_image(
-			mlx_ptr, path, &image->width, &image->height)) == NULL)
-		return ;
-	image->data = mlx_get_data_addr(image->id, &image->depth,
-									&image->size_line, &image->endian);
+	int		i;
+	t_image	*tex;
+
+	i = -1;
+	while (++i < TEXTURES_NUM)
+	{
+		tex = &state->textures[i];
+		if ((tex->id = mlx_xpm_file_to_image(state->mlx_ptr,
+				state->textures_path[i], &tex->width, &tex->height))
+				== NULL)
+			return (FALSE);
+		tex->data = mlx_get_data_addr(tex->id, &tex->depth,
+										&tex->size_line, &tex->endian);
+		if (tex->id == NULL)
+			return (FALSE);
+	}
+	return (TRUE);
 }
