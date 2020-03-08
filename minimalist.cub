@@ -1,9 +1,9 @@
-R  1600 1200
-NO ./textures/eagle.xpm
-SO ./textures/greystone.xpm
-WE ./textures/wood.xpm
-EA ./textures/greystone.xpm
-S  ./textures/cheese.xpm         
+R  800 600
+NO ./textures/cacharle_filled.xpm
+SO ./textures/cacharle_filled.xpm
+WE ./textures/cacharle_filled.xpm
+EA ./textures/cacharle_filled.xpm
+S  ./textures/cheese.xpm
 F  10,10,10
 C  40,40,40
 

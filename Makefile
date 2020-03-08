@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 LIBFT_PATH = ./libft
-MINILIBX_PATH = ./miniLibX
+MINILIBX_PATH = ./minilibx
 
 SRCDIR = src
 INCLUDEDIR = include
@@ -22,7 +22,7 @@ CCFLAGS = -I$(LIBFT_PATH) -I$(MINILIBX_PATH) -I$(INCLUDEDIR) \
 		  -Wall -Wextra -Werror
 LDFLAGS = -L$(LIBFT_PATH) -lft \
 		  -L$(MINILIBX_PATH) -lmlx \
-		  -framework OpenGL -framework AppKit -lm
+		  -lm -lXext -lX11 -lbsd
 
 NAME = cub3D
 SRCFILES = main.c \

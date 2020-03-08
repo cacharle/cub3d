@@ -55,11 +55,11 @@ static void		draw_stripe_pixels(t_state *state, t_sprite_state *sstate,
 static void		draw_stripe(t_state *state, t_sprite_state *sstate, int stripe)
 {
 	int tex_width;
-	int	tex_height;
+	/* int	tex_height; */
 	int	tex_x;
 
 	tex_width = state->textures[TEX_SPRITE].width;
-	tex_height = state->textures[TEX_SPRITE].height;
+	/* tex_height = state->textures[TEX_SPRITE].height; */
 	tex_x = (int)(256 * (stripe - (-sstate->sprite_width / 2
 				+ sstate->sprite_window_x))
 				* tex_width / sstate->sprite_width) / 256;

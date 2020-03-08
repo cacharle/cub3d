@@ -24,13 +24,13 @@
 # define CUB3D_BUFFER_SIZE 64
 
 # define WINDOW_TITLE "cub3D"
-# define MLXK_ESC 53
-# define MLXK_W 13
-# define MLXK_A 0
-# define MLXK_S 1
-# define MLXK_D 2
-# define MLXK_LEFT 123
-# define MLXK_RIGHT 124
+# define MLXK_ESC 65307
+# define MLXK_W 119
+# define MLXK_A 97
+# define MLXK_S 115
+# define MLXK_D 100
+# define MLXK_LEFT 65361
+# define MLXK_RIGHT 65363
 
 # define MLX_LITTLE_ENDIAN 0
 # define MLX_BIG_ENDIAN 1
